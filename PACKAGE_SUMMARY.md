@@ -225,8 +225,11 @@ The package has been successfully installed in the nesthus2026 Laravel project:
 # From package directory
 cd /Users/terjenesthus/Herd/laravel-yr
 
-# Run all tests (15 tests, ~0.68s)
+# Run all tests (41 tests, ~3.9s)
 composer test
+
+# Run specific test suite
+./vendor/bin/pest tests/Feature/DemoRouteTest.php
 
 # Check code style
 composer format:test
@@ -236,14 +239,16 @@ composer format
 ```
 
 **Current Test Results:**
-- ✅ 15 tests passing
-- ✅ 23 assertions
+- ✅ 41 tests passing
+- ✅ 143 assertions
 - ✅ 0 failures
 - ✅ Pint: All files passing
 
 ## 🎨 Usage Examples
 
-### Blade Component
+### Blade Components
+
+**Current Weather Card:**
 ```blade
 <x-yr-weather-card
     :latitude="59.9139"
@@ -252,19 +257,50 @@ composer format
 />
 ```
 
+**5-Day Forecast Card:**
+```blade
+<x-yr-forecast-card
+    :latitude="59.9139"
+    :longitude="10.7522"
+    location="Oslo"
+    :days="5"
+/>
+```
+
 ### PHP Service
 ```php
 use Ekstremedia\LaravelYr\Services\YrWeatherService;
+use Ekstremedia\LaravelYr\Services\GeocodingService;
 
+// Get weather by coordinates
 $weather = app(YrWeatherService::class)
     ->getCurrentWeather(59.9139, 10.7522, 90);
+
+// Get coordinates from location name
+$geocoding = app(GeocodingService::class);
+$result = $geocoding->geocode('Oslo, Norway');
+// Returns: ['latitude' => 59.9139, 'longitude' => 10.7522, 'display_name' => '...']
 ```
 
 ### JavaScript Fetch
 ```javascript
+// By address
 const response = await fetch('/api/weather/current?address=Oslo,Norway');
 const data = await response.json();
 console.log(data.data.current.temperature);
+
+// By coordinates
+const forecast = await fetch('/api/weather/forecast?lat=59.9139&lon=10.7522');
+const forecastData = await forecast.json();
+```
+
+### Interactive Demo
+```
+# Search by location
+http://yourapp.test/yr?location=Tokyo,Japan
+
+# Use specific coordinates
+http://yourapp.test/yr?latitude=35.6762&longitude=139.6503&location_name=Tokyo
 ```
 
 ## 📝 Next Steps (Optional Enhancements)
@@ -308,7 +344,7 @@ While the package is production-ready, these optional enhancements could be adde
 ---
 
 **Package Status:** ✅ Production Ready
-**Test Status:** ✅ All Passing (15/15)
+**Test Status:** ✅ All Passing (41/41, 143 assertions)
 **Code Style:** ✅ Pint Passing
 **CI/CD:** ✅ GitHub Actions Configured
-**Demo:** ✅ Working at /yr-weather-test
+**Demo:** ✅ Interactive Demo at /yr

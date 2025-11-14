@@ -40,17 +40,30 @@ Tests that verify:
 - ✅ Components can be instantiated with correct namespace
 - ✅ Demo route renders without errors
 
+### 3. **DemoRouteTest.php**
+Tests that verify:
+- ✅ Demo route renders with default location (Sortland, Norway)
+- ✅ Demo route accepts manual coordinates via query parameters
+- ✅ Demo route handles location search parameter with geocoding
+- ✅ Demo route displays error when location is not found
+- ✅ Demo route includes all search form elements
+- ✅ Demo route uses Alpine.js for interactive toggle
+- ✅ Demo route renders weather components with dynamic coordinates
+- ✅ Demo route preserves location search input after submission
+- ✅ Demo route preserves coordinate inputs after submission
+
 ## Test Coverage
 
-Total: **31 tests** with **91 assertions**
+Total: **41 tests** with **143 assertions**
 
 ### Breakdown:
 - **Namespace Consistency**: 7 tests
 - **Blade Component Rendering**: 5 tests
 - **Component Attribution**: 2 tests
+- **Demo Route Functionality**: 9 tests
 - **Weather Controller API**: 8 tests
 - **Geocoding Service**: 3 tests
-- **Weather Service**: 6 tests
+- **Weather Service**: 7 tests
 
 ## Running Tests
 
