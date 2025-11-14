@@ -138,37 +138,63 @@
 
 <style>
     .yr-forecast-card-purple {
-        background: rgba(20, 10, 40, 0.65);
-        backdrop-filter: blur(32px) saturate(120%);
-        -webkit-backdrop-filter: blur(32px) saturate(120%);
-        border-radius: 28px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 2rem;
+        background: linear-gradient(135deg,
+                    rgba(88, 86, 214, 0.42),
+                    rgba(175, 108, 233, 0.38));
+        backdrop-filter: blur(40px) saturate(150%);
+        -webkit-backdrop-filter: blur(40px) saturate(150%);
+        border-radius: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        padding: 2.5rem;
         color: white;
-        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15),
+                    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
         width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .yr-forecast-card-purple::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
     }
 
     .forecast-header-purple {
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.02),
+                    transparent);
     }
 
     .forecast-title-purple {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.75rem;
-        font-weight: 700;
-        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-        color: #ffffff;
+        margin: 0 0 0.625rem 0;
+        font-size: 1.625rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #ffffff, #e8d8ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
     }
 
     .forecast-coordinates {
         margin: 0;
-        font-size: 0.95rem;
-        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
         font-weight: 500;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     .forecast-days-container {
@@ -179,15 +205,23 @@
     }
 
     .day-row {
-        background: transparent;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.06),
+                    rgba(255, 255, 255, 0.02));
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
         overflow: hidden;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
     }
 
     .day-row:hover {
-        border-color: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.2);
+        background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.08),
+                    rgba(255, 255, 255, 0.03));
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
     }
 
     .day-summary {
@@ -211,15 +245,18 @@
     }
 
     .day-name-large {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #ffffff;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        letter-spacing: -0.02em;
     }
 
     .day-date-small {
-        font-size: 0.8125rem;
-        color: rgba(255, 255, 255, 0.75);
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 500;
     }
 
     .day-icon-col {
@@ -366,19 +403,24 @@
 
     .temp-value {
         font-size: 1.25rem;
-        font-weight: 700;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        font-weight: 600;
         line-height: 1;
+        letter-spacing: -0.02em;
+        color: rgba(255, 255, 255, 0.9);
     }
 
     .temp-value.temp-warm {
-        color: #ff6b6b;
-        text-shadow: 0 2px 8px rgba(255, 107, 107, 0.5);
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .temp-value.temp-cold {
-        color: #4dabf7;
-        text-shadow: 0 2px 8px rgba(77, 171, 247, 0.5);
+        background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .hour-feels-col {

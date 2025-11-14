@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #1e0342 0%, #2e1065 25%, #4c1d95 50%, #581c87 75%, #6d28d9 100%);
+            background: linear-gradient(135deg, #1a0b2e 0%, #2d1b4e 25%, #3d2463 50%, #4a2c6d 75%, #2d1b4e 100%);
             background-attachment: fixed;
             min-height: 100vh;
             display: flex;
@@ -27,19 +27,14 @@
         body::before {
             content: '';
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: drift 20s linear infinite;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(167, 139, 250, 0.08) 0%, transparent 50%);
             pointer-events: none;
-        }
-
-        @keyframes drift {
-            from { transform: translate(0, 0); }
-            to { transform: translate(50px, 50px); }
+            opacity: 0.6;
         }
 
         .container {
@@ -101,18 +96,27 @@
         }
 
         .disable-note {
-            background: rgba(20, 10, 40, 0.5);
-            backdrop-filter: blur(24px) saturate(120%);
-            -webkit-backdrop-filter: blur(24px) saturate(120%);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 1.25rem;
+            background: linear-gradient(135deg,
+                        rgba(88, 86, 214, 0.35),
+                        rgba(175, 108, 233, 0.3));
+            backdrop-filter: blur(30px) saturate(150%);
+            -webkit-backdrop-filter: blur(30px) saturate(150%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 1.5rem;
             color: white;
             margin-top: 3rem;
             font-size: 0.875rem;
             text-align: center;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1),
+                        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            transition: all 0.3s ease;
+        }
+
+        .disable-note:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15),
+                        0 0 0 1px rgba(255, 255, 255, 0.15) inset;
         }
 
         .disable-note strong {

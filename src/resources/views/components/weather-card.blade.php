@@ -94,82 +94,119 @@
 
 <style>
     .yr-weather-card {
-        background: rgba(20, 10, 40, 0.65);
-        backdrop-filter: blur(32px) saturate(120%);
-        -webkit-backdrop-filter: blur(32px) saturate(120%);
-        border-radius: 28px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 2rem;
+        background: linear-gradient(135deg,
+                    rgba(88, 86, 214, 0.42),
+                    rgba(175, 108, 233, 0.38));
+        backdrop-filter: blur(40px) saturate(150%);
+        -webkit-backdrop-filter: blur(40px) saturate(150%);
+        border-radius: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        padding: 2.5rem;
         color: white;
         width: 100%;
-        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15),
+                    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .yr-weather-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
     }
 
     .weather-location {
-        margin: 0 0 1.5rem 0;
-        font-size: 1.75rem;
-        font-weight: 700;
+        margin: 0 0 2rem 0;
+        font-size: 1.875rem;
+        font-weight: 600;
         text-align: center;
-        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-        color: #ffffff;
+        background: linear-gradient(135deg, #ffffff, #e8d8ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
     }
 
     .weather-main {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 2rem 0;
-        gap: 1.5rem;
+        margin: 2.5rem 0;
+        gap: 2rem;
     }
 
     .weather-icon {
-        width: 96px;
-        height: 96px;
-        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+        width: 100px;
+        height: 100px;
+        filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.15));
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
     }
 
     .weather-temp-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.625rem;
     }
 
     .weather-temp {
-        font-size: 4rem;
+        font-size: 4.5rem;
         font-weight: 700;
         line-height: 1;
-        text-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        letter-spacing: -0.04em;
+        background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.9));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .weather-temp.temp-warm {
-        color: #ff6b6b;
-        text-shadow: 0 4px 16px rgba(255, 107, 107, 0.5);
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .weather-temp.temp-cold {
-        color: #4dabf7;
-        text-shadow: 0 4px 16px rgba(77, 171, 247, 0.5);
+        background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .feels-like {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         font-weight: 500;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        opacity: 0.9;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        font-size: 0.75rem;
     }
 
     .feels-like.temp-warm {
-        color: #ffa8a8;
+        color: #ffd3d4;
     }
 
     .feels-like.temp-cold {
-        color: #74c0fc;
+        color: #d3e9ff;
     }
 
     .weather-details {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 1rem;
         margin: 2rem 0 1.5rem 0;
     }
@@ -177,91 +214,128 @@
     .weather-detail {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
-        padding: 1rem;
-        background: transparent;
-        border-radius: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
+        gap: 0.875rem;
+        padding: 1.125rem;
+        background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.08),
+                    rgba(255, 255, 255, 0.03));
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
     }
 
     .weather-detail:hover {
-        background: rgba(255, 255, 255, 0.05);
-        border-color: rgba(255, 255, 255, 0.15);
+        background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.12),
+                    rgba(255, 255, 255, 0.06));
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     }
 
     .detail-icon {
         flex-shrink: 0;
-        color: #ffffff;
+        color: rgba(255, 255, 255, 0.9);
+        width: 22px;
+        height: 22px;
+    }
+
+    .detail-icon svg {
+        width: 100%;
+        height: 100%;
     }
 
     .detail-content {
         display: flex;
         flex-direction: column;
-        gap: 0.25rem;
+        gap: 0.375rem;
         min-width: 0;
     }
 
     .detail-label {
-        font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.7);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 600;
+        letter-spacing: 0.08em;
+        font-weight: 500;
     }
 
     .detail-value {
         font-size: 1.125rem;
-        font-weight: 700;
-        color: #ffffff;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        letter-spacing: -0.02em;
     }
 
     .weather-footer {
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        margin-top: 2rem;
+        padding-top: 1.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(180deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.02));
     }
 
     .weather-time {
         text-align: center;
-        font-size: 0.875rem;
-        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
         margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 500;
     }
 
     .weather-attribution {
         text-align: center;
-        color: rgba(255, 255, 255, 0.85);
+        color: rgba(255, 255, 255, 0.7);
     }
 
     .weather-attribution small {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
+        letter-spacing: 0.02em;
     }
 
     .weather-attribution a {
-        color: white;
+        color: rgba(255, 255, 255, 0.85);
         text-decoration: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-        transition: border-color 0.2s;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.2s ease;
     }
 
     .weather-attribution a:hover {
-        border-bottom-color: white;
+        color: white;
+        border-bottom-color: rgba(255, 255, 255, 0.6);
     }
 
     .weather-error {
         text-align: center;
-        padding: 2rem;
-        color: rgba(255, 255, 255, 0.85);
+        padding: 3rem 2rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+    }
+
+    .weather-error p {
+        margin: 0;
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     @media (max-width: 640px) {
         .yr-weather-card {
-            padding: 1.5rem;
+            padding: 2rem;
+            border-radius: 24px;
+        }
+
+        .weather-location {
+            font-size: 1.5rem;
         }
 
         .weather-temp {
-            font-size: 3rem;
+            font-size: 3.5rem;
         }
 
         .weather-icon {
@@ -271,6 +345,10 @@
 
         .weather-details {
             grid-template-columns: 1fr;
+        }
+
+        .weather-detail {
+            padding: 1rem;
         }
     }
 </style>
