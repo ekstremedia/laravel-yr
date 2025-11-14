@@ -231,7 +231,7 @@ composer format
 
 ### PHP Service
 ```php
-use YourVendor\LaravelYr\Services\YrWeatherService;
+use Ekstremedia\LaravelYr\Services\YrWeatherService;
 
 $weather = app(YrWeatherService::class)
     ->getCurrentWeather(59.9139, 10.7522, 90);
