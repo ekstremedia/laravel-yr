@@ -21,8 +21,12 @@ use Illuminate\Support\Facades\Route;
 $prefix = config('yr.api_route_prefix', 'api/weather');
 $currentEndpoint = config('yr.api_current_endpoint', 'current');
 $forecastEndpoint = config('yr.api_forecast_endpoint', 'forecast');
+$sunEndpoint = config('yr.api_sun_endpoint', 'sun');
+$moonEndpoint = config('yr.api_moon_endpoint', 'moon');
 
-Route::prefix($prefix)->group(function () use ($currentEndpoint, $forecastEndpoint) {
+Route::prefix($prefix)->group(function () use ($currentEndpoint, $forecastEndpoint, $sunEndpoint, $moonEndpoint) {
     Route::get($currentEndpoint, [WeatherController::class, 'current'])->name('yr.api.current');
     Route::get($forecastEndpoint, [WeatherController::class, 'forecast'])->name('yr.api.forecast');
+    Route::get($sunEndpoint, [WeatherController::class, 'sun'])->name('yr.api.sun');
+    Route::get($moonEndpoint, [WeatherController::class, 'moon'])->name('yr.api.moon');
 });

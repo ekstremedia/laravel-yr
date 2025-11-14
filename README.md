@@ -71,6 +71,18 @@ GET /api/weather/current?address=Oslo,Norway
 GET /api/weather/forecast?lat=59.9139&lon=10.7522
 ```
 
+### Get sunrise/sunset data
+
+```http
+GET /api/weather/sun?lat=59.9139&lon=10.7522
+```
+
+### Get moon phase data
+
+```http
+GET /api/weather/moon?lat=59.9139&lon=10.7522
+```
+
 ## Response Example
 
 ```json
@@ -114,6 +126,14 @@ $result = $helper->getWeatherByCoordinates(59.9139, 10.7522, altitude: 90);
 // Get forecast
 $forecast = $helper->getForecastByAddress('Bergen, Norway');
 $forecast = $helper->getForecastByCoordinates(60.39, 5.32, complete: true);
+
+// Get sun data (sunrise/sunset)
+$sun = $helper->getSunByAddress('Oslo, Norway');
+$sun = $helper->getSunByCoordinates(59.9139, 10.7522, date: '2025-12-25', offset: 1);
+
+// Get moon data (phase, rise/set)
+$moon = $helper->getMoonByAddress('Bergen, Norway');
+$moon = $helper->getMoonByCoordinates(60.39, 5.32, date: '2025-12-25', offset: 1);
 ```
 
 ### Using API Routes
@@ -137,11 +157,15 @@ YR_API_ROUTE_PREFIX=weather
 # Customize endpoint names
 YR_API_CURRENT_ENDPOINT=now
 YR_API_FORECAST_ENDPOINT=predictions
+YR_API_SUN_ENDPOINT=sunrise
+YR_API_MOON_ENDPOINT=moonphase
 ```
 
 With the above config, routes become:
 - `/weather/now` (current weather)
 - `/weather/predictions` (forecast)
+- `/weather/sunrise` (sun data)
+- `/weather/moonphase` (moon data)
 
 ### Using Services Directly
 
@@ -174,6 +198,28 @@ return view('weather', ['weather' => $weather]);
 />
 ```
 
+**Sunrise/Sunset:**
+```blade
+<x-yr-sunrise-card
+    :latitude="59.9139"
+    :longitude="10.7522"
+    location="Oslo, Norway"
+    date="2025-12-25"
+    :offset="1"
+/>
+```
+
+**Moon Phase:**
+```blade
+<x-yr-moon-card
+    :latitude="59.9139"
+    :longitude="10.7522"
+    location="Oslo, Norway"
+    date="2025-12-25"
+    :offset="1"
+/>
+```
+
 ### In JavaScript
 
 ```javascript
@@ -185,6 +231,8 @@ console.log(`${data.current.temperature}°C`);
 
 ## Available Data
 
+### Weather Data
+
 Each weather response includes:
 
 - Temperature (actual and feels-like)
@@ -194,6 +242,24 @@ Each weather response includes:
 - Precipitation
 - UV index
 - Weather symbol/icon code
+
+### Sun Data
+
+Sunrise/sunset responses include:
+
+- Sunrise and sunset times with azimuth
+- Solar noon and solar midnight
+- Sun elevation angles
+- Daylight duration (hours and minutes)
+
+### Moon Data
+
+Moon phase responses include:
+
+- Moon phase (degrees and name: New Moon, Waxing Crescent, etc.)
+- Moon phase emoji visualization
+- Moonrise and moonset times with azimuth
+- High moon and low moon times with elevation
 
 ## Configuration
 
@@ -219,6 +285,8 @@ return [
     // Customize endpoint names
     'api_current_endpoint' => env('YR_API_CURRENT_ENDPOINT', 'current'),
     'api_forecast_endpoint' => env('YR_API_FORECAST_ENDPOINT', 'forecast'),
+    'api_sun_endpoint' => env('YR_API_SUN_ENDPOINT', 'sun'),
+    'api_moon_endpoint' => env('YR_API_MOON_ENDPOINT', 'moon'),
 ];
 ```
 

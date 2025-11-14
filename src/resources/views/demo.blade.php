@@ -38,7 +38,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             width: 100%;
             position: relative;
             z-index: 1;
@@ -92,6 +92,13 @@
         }
 
         .weather-section {
+            margin-bottom: 2rem;
+        }
+
+        .sun-moon-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
             margin-bottom: 2rem;
         }
 
@@ -362,6 +369,11 @@
                 margin-bottom: 1.75rem;
             }
 
+            .sun-moon-grid {
+                grid-template-columns: 1fr;
+                gap: 1.75rem;
+            }
+
             .disable-note {
                 padding: 1.25rem;
                 margin-top: 2.5rem;
@@ -455,6 +467,11 @@
                 margin-bottom: 1.5rem;
             }
 
+            .sun-moon-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
             .disable-note {
                 padding: 1rem;
                 margin-top: 2rem;
@@ -531,6 +548,20 @@
                 :longitude="$longitude"
                 :location="$location"
                 :days="5"
+            />
+        </div>
+
+        <div class="sun-moon-grid">
+            <x-yr-sunrise-card
+                :latitude="$latitude"
+                :longitude="$longitude"
+                :location="$location"
+            />
+
+            <x-yr-moon-card
+                :latitude="$latitude"
+                :longitude="$longitude"
+                :location="$location"
             />
         </div>
 

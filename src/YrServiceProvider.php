@@ -3,9 +3,13 @@
 namespace Ekstremedia\LaravelYr;
 
 use Ekstremedia\LaravelYr\Services\GeocodingService;
+use Ekstremedia\LaravelYr\Services\MoonService;
+use Ekstremedia\LaravelYr\Services\SunService;
 use Ekstremedia\LaravelYr\Services\WeatherHelper;
 use Ekstremedia\LaravelYr\Services\YrWeatherService;
 use Ekstremedia\LaravelYr\View\Components\ForecastCard;
+use Ekstremedia\LaravelYr\View\Components\MoonCard;
+use Ekstremedia\LaravelYr\View\Components\SunriseCard;
 use Ekstremedia\LaravelYr\View\Components\WeatherCard;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,10 +34,20 @@ class YrServiceProvider extends ServiceProvider
             );
         });
 
+        $this->app->singleton(SunService::class, function ($app) {
+            return new SunService();
+        });
+
+        $this->app->singleton(MoonService::class, function ($app) {
+            return new MoonService();
+        });
+
         $this->app->singleton(WeatherHelper::class, function ($app) {
             return new WeatherHelper(
                 $app->make(YrWeatherService::class),
-                $app->make(GeocodingService::class)
+                $app->make(GeocodingService::class),
+                $app->make(SunService::class),
+                $app->make(MoonService::class)
             );
         });
     }
@@ -59,6 +73,8 @@ class YrServiceProvider extends ServiceProvider
         $this->loadViewComponentsAs('yr', [
             WeatherCard::class,
             ForecastCard::class,
+            SunriseCard::class,
+            MoonCard::class,
         ]);
 
         // Register API routes if enabled

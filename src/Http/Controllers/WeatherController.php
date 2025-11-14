@@ -3,6 +3,8 @@
 namespace Ekstremedia\LaravelYr\Http\Controllers;
 
 use Ekstremedia\LaravelYr\Services\GeocodingService;
+use Ekstremedia\LaravelYr\Services\MoonService;
+use Ekstremedia\LaravelYr\Services\SunService;
 use Ekstremedia\LaravelYr\Services\YrWeatherService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -30,7 +32,9 @@ class WeatherController extends Controller
 {
     public function __construct(
         private YrWeatherService $weatherService,
-        private GeocodingService $geocodingService
+        private GeocodingService $geocodingService,
+        private SunService $sunService,
+        private MoonService $moonService
     ) {}
 
     /**
@@ -123,17 +127,114 @@ class WeatherController extends Controller
     }
 
     /**
+     * Get sunrise/sunset data for given location (coordinates or address)
+     *
+     * Example usage:
+     * GET /api/weather/sun?lat=59.9139&lon=10.7522
+     * GET /api/weather/sun?address=Oslo,Norway&date=2025-12-25&offset=1
+     */
+    public function sun(Request $request): JsonResponse
+    {
+        $location = $this->resolveLocation($request, includeAltitude: false);
+
+        if (isset($location['error'])) {
+            return response()->json($location, $location['status'] ?? 400);
+        }
+
+        $date = $request->get('date'); // Optional, defaults to today
+        $offset = (int) $request->get('offset', 0); // Timezone offset in hours
+
+        $sunData = $this->sunService->getSunData(
+            $location['latitude'],
+            $location['longitude'],
+            $date,
+            $offset
+        );
+
+        if (! $sunData) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Unable to fetch sun data',
+                'message' => 'The sunrise service is currently unavailable or returned invalid data.',
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'sun' => $sunData,
+                'location' => [
+                    'latitude' => $location['latitude'],
+                    'longitude' => $location['longitude'],
+                    'name' => $location['display_name'] ?? null,
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Get moon phase and rise/set data for given location (coordinates or address)
+     *
+     * Example usage:
+     * GET /api/weather/moon?lat=59.9139&lon=10.7522
+     * GET /api/weather/moon?address=Oslo,Norway&date=2025-12-25&offset=1
+     */
+    public function moon(Request $request): JsonResponse
+    {
+        $location = $this->resolveLocation($request, includeAltitude: false);
+
+        if (isset($location['error'])) {
+            return response()->json($location, $location['status'] ?? 400);
+        }
+
+        $date = $request->get('date'); // Optional, defaults to today
+        $offset = (int) $request->get('offset', 0); // Timezone offset in hours
+
+        $moonData = $this->moonService->getMoonData(
+            $location['latitude'],
+            $location['longitude'],
+            $date,
+            $offset
+        );
+
+        if (! $moonData) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Unable to fetch moon data',
+                'message' => 'The moon service is currently unavailable or returned invalid data.',
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'moon' => $moonData,
+                'location' => [
+                    'latitude' => $location['latitude'],
+                    'longitude' => $location['longitude'],
+                    'name' => $location['display_name'] ?? null,
+                ],
+            ],
+        ]);
+    }
+
+    /**
      * Resolve location from request (either coordinates or address)
      */
-    private function resolveLocation(Request $request): array
+    private function resolveLocation(Request $request, bool $includeAltitude = true): array
     {
         // Check if coordinates are provided
         if ($request->has('lat') && $request->has('lon')) {
-            $validator = Validator::make($request->all(), [
+            $rules = [
                 'lat' => 'required|numeric|between:-90,90',
                 'lon' => 'required|numeric|between:-180,180',
-                'altitude' => 'nullable|integer|between:-500,9000',
-            ]);
+            ];
+
+            if ($includeAltitude) {
+                $rules['altitude'] = 'nullable|integer|between:-500,9000';
+            }
+
+            $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
                 return [
@@ -143,19 +244,29 @@ class WeatherController extends Controller
                 ];
             }
 
-            return [
+            $result = [
                 'latitude' => (float) $request->get('lat'),
                 'longitude' => (float) $request->get('lon'),
-                'altitude' => $request->has('altitude') ? (int) $request->get('altitude') : null,
             ];
+
+            if ($includeAltitude) {
+                $result['altitude'] = $request->has('altitude') ? (int) $request->get('altitude') : null;
+            }
+
+            return $result;
         }
 
         // Check if address is provided
         if ($request->has('address')) {
-            $validator = Validator::make($request->all(), [
+            $rules = [
                 'address' => 'required|string|min:3|max:255',
-                'altitude' => 'nullable|integer|between:-500,9000',
-            ]);
+            ];
+
+            if ($includeAltitude) {
+                $rules['altitude'] = 'nullable|integer|between:-500,9000';
+            }
+
+            $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
                 return [
@@ -175,12 +286,17 @@ class WeatherController extends Controller
                 ];
             }
 
-            return [
+            $result = [
                 'latitude' => $geocoded['latitude'],
                 'longitude' => $geocoded['longitude'],
-                'altitude' => $request->has('altitude') ? (int) $request->get('altitude') : null,
                 'display_name' => $geocoded['display_name'],
             ];
+
+            if ($includeAltitude) {
+                $result['altitude'] = $request->has('altitude') ? (int) $request->get('altitude') : null;
+            }
+
+            return $result;
         }
 
         return [

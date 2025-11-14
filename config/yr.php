@@ -84,4 +84,26 @@ return [
     |
     */
     'api_forecast_endpoint' => env('YR_API_FORECAST_ENDPOINT', 'forecast'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Sun Endpoint
+    |--------------------------------------------------------------------------
+    |
+    | The endpoint name for sunrise/sunset data.
+    | Default: 'sun' (creates /api/weather/sun)
+    |
+    */
+    'api_sun_endpoint' => env('YR_API_SUN_ENDPOINT', 'sun'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Moon Endpoint
+    |--------------------------------------------------------------------------
+    |
+    | The endpoint name for moon phase and rise/set data.
+    | Default: 'moon' (creates /api/weather/moon)
+    |
+    */
+    'api_moon_endpoint' => env('YR_API_MOON_ENDPOINT', 'moon'),
 ];

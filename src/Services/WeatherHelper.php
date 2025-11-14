@@ -39,7 +39,9 @@ class WeatherHelper
 {
     public function __construct(
         private YrWeatherService $weatherService,
-        private GeocodingService $geocodingService
+        private GeocodingService $geocodingService,
+        private SunService $sunService,
+        private MoonService $moonService
     ) {}
 
     /**
@@ -246,5 +248,159 @@ class WeatherHelper
         if ($altitude !== null && ($altitude < -500 || $altitude > 9000)) {
             throw new \InvalidArgumentException('Altitude must be between -500 and 9000 meters');
         }
+    }
+
+    /**
+     * Get sunrise/sunset data by address
+     *
+     * @param  string  $address  Full address (e.g., "Oslo, Norway")
+     * @param  string|null  $date  Date in Y-m-d format (default: today)
+     * @param  int  $offset  Timezone offset in hours (default: 0 for UTC)
+     * @return array|null Returns sun data array or null on failure
+     *
+     * @throws \InvalidArgumentException If address is invalid
+     */
+    public function getSunByAddress(string $address, ?string $date = null, int $offset = 0): ?array
+    {
+        $this->validateAddress($address);
+
+        $geocoded = $this->geocodingService->geocode($address);
+
+        if (! $geocoded) {
+            return null;
+        }
+
+        $sunData = $this->sunService->getSunData(
+            $geocoded['latitude'],
+            $geocoded['longitude'],
+            $date,
+            $offset
+        );
+
+        if (! $sunData) {
+            return null;
+        }
+
+        return [
+            'sun' => $sunData,
+            'location' => [
+                'latitude' => $geocoded['latitude'],
+                'longitude' => $geocoded['longitude'],
+                'name' => $geocoded['display_name'],
+            ],
+        ];
+    }
+
+    /**
+     * Get sunrise/sunset data by coordinates
+     *
+     * @param  float  $latitude  Latitude (-90 to 90)
+     * @param  float  $longitude  Longitude (-180 to 180)
+     * @param  string|null  $date  Date in Y-m-d format (default: today)
+     * @param  int  $offset  Timezone offset in hours (default: 0 for UTC)
+     * @return array|null Returns sun data array or null on failure
+     *
+     * @throws \InvalidArgumentException If coordinates are invalid
+     */
+    public function getSunByCoordinates(float $latitude, float $longitude, ?string $date = null, int $offset = 0): ?array
+    {
+        $this->validateCoordinates($latitude, $longitude);
+
+        $sunData = $this->sunService->getSunData(
+            $latitude,
+            $longitude,
+            $date,
+            $offset
+        );
+
+        if (! $sunData) {
+            return null;
+        }
+
+        return [
+            'sun' => $sunData,
+            'location' => [
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'name' => null,
+            ],
+        ];
+    }
+
+    /**
+     * Get moon phase and rise/set data by address
+     *
+     * @param  string  $address  Full address (e.g., "Oslo, Norway")
+     * @param  string|null  $date  Date in Y-m-d format (default: today)
+     * @param  int  $offset  Timezone offset in hours (default: 0 for UTC)
+     * @return array|null Returns moon data array or null on failure
+     *
+     * @throws \InvalidArgumentException If address is invalid
+     */
+    public function getMoonByAddress(string $address, ?string $date = null, int $offset = 0): ?array
+    {
+        $this->validateAddress($address);
+
+        $geocoded = $this->geocodingService->geocode($address);
+
+        if (! $geocoded) {
+            return null;
+        }
+
+        $moonData = $this->moonService->getMoonData(
+            $geocoded['latitude'],
+            $geocoded['longitude'],
+            $date,
+            $offset
+        );
+
+        if (! $moonData) {
+            return null;
+        }
+
+        return [
+            'moon' => $moonData,
+            'location' => [
+                'latitude' => $geocoded['latitude'],
+                'longitude' => $geocoded['longitude'],
+                'name' => $geocoded['display_name'],
+            ],
+        ];
+    }
+
+    /**
+     * Get moon phase and rise/set data by coordinates
+     *
+     * @param  float  $latitude  Latitude (-90 to 90)
+     * @param  float  $longitude  Longitude (-180 to 180)
+     * @param  string|null  $date  Date in Y-m-d format (default: today)
+     * @param  int  $offset  Timezone offset in hours (default: 0 for UTC)
+     * @return array|null Returns moon data array or null on failure
+     *
+     * @throws \InvalidArgumentException If coordinates are invalid
+     */
+    public function getMoonByCoordinates(float $latitude, float $longitude, ?string $date = null, int $offset = 0): ?array
+    {
+        $this->validateCoordinates($latitude, $longitude);
+
+        $moonData = $this->moonService->getMoonData(
+            $latitude,
+            $longitude,
+            $date,
+            $offset
+        );
+
+        if (! $moonData) {
+            return null;
+        }
+
+        return [
+            'moon' => $moonData,
+            'location' => [
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'name' => null,
+            ],
+        ];
     }
 }
