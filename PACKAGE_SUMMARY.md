@@ -42,26 +42,49 @@ GET /api/weather/forecast?address=Bergen,Norway
 
 ### 4. Frontend Components
 - ✅ **WeatherCard Blade Component**
-  - Beautiful gradient design
+  - Beautiful glassmorphic design with dark purple theme
   - Weather icons from MET.no
-  - Responsive layout
-  - Displays: temperature, wind, humidity, precipitation
+  - Fully responsive (mobile, tablet, desktop)
+  - Temperature-based color gradients (warm/cold)
+  - Displays: temperature, feels-like, wind, humidity, precipitation, pressure
+  - Animated weather icons
   - Real-time updates
 
-- ✅ **Interactive Demo Page** (`/yr-weather-test`)
-  - Live search form (address OR coordinates)
-  - Real-time API integration
-  - JSON response viewer
-  - Three pre-loaded city examples
-  - Full feature demonstration
+- ✅ **ForecastCard Blade Component**
+  - 5-day forecast with expandable hourly details
+  - Alpine.js powered interactive UI
+  - Glassmorphic design matching WeatherCard
+  - Mobile-optimized layouts
+  - Comprehensive hourly data (temperature, feels-like, precipitation, wind, humidity)
+  - Smooth animations and transitions
+
+- ✅ **Interactive Demo Page** (`/yr`)
+  - **Two search modes:**
+    - Location search by city name (e.g., "Tokyo, Japan")
+    - Manual coordinate input (latitude/longitude)
+  - **Real-time weather updates:**
+    - Live WeatherCard component
+    - Live ForecastCard component
+  - **URL parameter support:**
+    - `?location=Oslo,Norway` - Search by location
+    - `?latitude=59.9139&longitude=10.7522&location_name=Oslo` - Manual coords
+  - Beautiful UI with mode toggle buttons
+  - Error handling for invalid locations
+  - Currently showing location display
+  - Fully responsive design
+  - Can be disabled via `YR_DEMO_ROUTE=false`
 
 ### 5. Testing & CI/CD
-- ✅ **Pest Test Suite** (15 tests, all passing)
-  - Unit tests for YrWeatherService (symbol URLs, calculations)
-  - Unit tests for GeocodingService (instantiation, config)
+- ✅ **Pest Test Suite** (41 tests, all passing, 143 assertions)
+  - Unit tests for YrWeatherService (symbol URLs, calculations, coordinate truncation)
+  - Unit tests for GeocodingService (instantiation, user agent, coordinate truncation)
   - Feature tests for WeatherController (validation, endpoints)
+  - Feature tests for Blade components (rendering, namespace consistency)
+  - Feature tests for Demo route (location search, coordinates, error handling)
+  - Feature tests for Attribution (licensing compliance)
+  - Feature tests for Namespace consistency (no old references)
   - No external API dependencies in tests
-  - Fast execution (~0.68s)
+  - Fast execution (~3.9s)
 
 - ✅ **GitHub Actions Workflow**
   - Automated testing on push/PR

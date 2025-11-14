@@ -145,6 +145,164 @@
             color: #ff6b6b;
         }
 
+        .error-message {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.15));
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 24px;
+            padding: 1.25rem 1.5rem;
+            color: #fecaca;
+            margin-bottom: 2rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .error-message strong {
+            color: #fca5a5;
+        }
+
+        .location-search {
+            background: linear-gradient(135deg,
+                        rgba(139, 92, 246, 0.15),
+                        rgba(124, 58, 237, 0.1));
+            backdrop-filter: blur(30px) saturate(150%);
+            -webkit-backdrop-filter: blur(30px) saturate(150%);
+            border-radius: 28px;
+            border: 1px solid rgba(167, 139, 250, 0.25);
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 16px 48px rgba(139, 92, 246, 0.15),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .search-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 1.5rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff, #e8d8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .search-form {
+            margin-bottom: 1.25rem;
+        }
+
+        .search-mode-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: rgba(30, 27, 75, 0.4);
+            padding: 0.375rem;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 14px;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mode-btn:hover {
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(124, 58, 237, 0.3));
+            color: white;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+        }
+
+        .search-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+        }
+
+        .coordinate-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.875rem;
+        }
+
+        .coordinate-inputs .search-input {
+            grid-column: 1 / -1;
+        }
+
+        .search-input,
+        .coord-input {
+            padding: 0.875rem 1.25rem;
+            background: rgba(30, 27, 75, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            color: white;
+            font-size: 0.9375rem;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .search-input::placeholder,
+        .coord-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .search-input:focus,
+        .coord-input:focus {
+            border-color: rgba(167, 139, 250, 0.5);
+            background: rgba(30, 27, 75, 0.7);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .search-button {
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 16px;
+            color: white;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+            background: linear-gradient(135deg, #9333ea, #8b5cf6);
+        }
+
+        .search-button:active {
+            transform: translateY(0);
+        }
+
+        .current-location {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9375rem;
+            padding: 1rem;
+            background: rgba(30, 27, 75, 0.3);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .current-location strong {
+            color: white;
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 1.5rem 1rem;
@@ -174,6 +332,30 @@
             .info code {
                 font-size: 0.8125rem;
                 padding: 0.3rem 0.625rem;
+            }
+
+            .location-search {
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+                border-radius: 24px;
+            }
+
+            .search-title {
+                font-size: 1.25rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .mode-btn {
+                padding: 0.625rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .coordinate-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .current-location {
+                font-size: 0.875rem;
             }
 
             .weather-section {
@@ -231,6 +413,44 @@
                 margin: 0.125rem 0;
             }
 
+            .location-search {
+                padding: 1.25rem;
+                margin-bottom: 1.75rem;
+                border-radius: 20px;
+            }
+
+            .search-title {
+                font-size: 1.125rem;
+                margin-bottom: 1rem;
+            }
+
+            .search-mode-toggle {
+                flex-direction: column;
+                gap: 0.375rem;
+                padding: 0.25rem;
+            }
+
+            .mode-btn {
+                padding: 0.625rem 0.875rem;
+                font-size: 0.8125rem;
+            }
+
+            .search-input,
+            .coord-input {
+                padding: 0.75rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .search-button {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.875rem;
+            }
+
+            .current-location {
+                font-size: 0.8125rem;
+                padding: 0.875rem;
+            }
+
             .weather-section {
                 margin-bottom: 1.5rem;
             }
@@ -258,19 +478,58 @@
 </head>
 <body>
     <div class="container">
+        @if($error)
+            <div class="error-message">
+                <strong>Error:</strong> {{ $error }}
+            </div>
+        @endif
+
+        <div class="location-search">
+            <h2 class="search-title">Change Location</h2>
+
+            <form method="GET" action="{{ route('yr.demo') }}" class="search-form" x-data="{ mode: 'location' }">
+                <div class="search-mode-toggle">
+                    <button type="button" @click="mode = 'location'" :class="{ 'active': mode === 'location' }" class="mode-btn">
+                        Search by Location
+                    </button>
+                    <button type="button" @click="mode = 'coordinates'" :class="{ 'active': mode === 'coordinates' }" class="mode-btn">
+                        Manual Coordinates
+                    </button>
+                </div>
+
+                <div x-show="mode === 'location'" class="search-inputs">
+                    <input type="text" name="location" placeholder="e.g., Oslo, Norway or Paris, France" class="search-input" value="{{ request('location') }}">
+                    <button type="submit" class="search-button">Search Location</button>
+                </div>
+
+                <div x-show="mode === 'coordinates'" class="search-inputs">
+                    <div class="coordinate-inputs">
+                        <input type="number" step="0.0001" name="latitude" placeholder="Latitude" class="coord-input" value="{{ request('latitude') }}">
+                        <input type="number" step="0.0001" name="longitude" placeholder="Longitude" class="coord-input" value="{{ request('longitude') }}">
+                        <input type="text" name="location_name" placeholder="Location name (optional)" class="search-input" value="{{ request('location_name') }}">
+                    </div>
+                    <button type="submit" class="search-button">Update Location</button>
+                </div>
+            </form>
+
+            <div class="current-location">
+                Currently showing: <strong>{{ $location }}</strong> ({{ round($latitude, 4) }}°N, {{ round($longitude, 4) }}°E)
+            </div>
+        </div>
+
         <div class="weather-section">
             <x-yr-weather-card
-                :latitude="68.7044"
-                :longitude="15.4140"
-                location="Sortland, Norway"
+                :latitude="$latitude"
+                :longitude="$longitude"
+                :location="$location"
             />
         </div>
 
         <div class="weather-section">
             <x-yr-forecast-card
-                :latitude="68.7044"
-                :longitude="15.4140"
-                location="Sortland"
+                :latitude="$latitude"
+                :longitude="$longitude"
+                :location="$location"
                 :days="5"
             />
         </div>
@@ -285,5 +544,7 @@
             <p>Add <code>YR_DEMO_ROUTE=false</code> to your .env file</p>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </body>
 </html>

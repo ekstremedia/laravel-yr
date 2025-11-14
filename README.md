@@ -26,10 +26,26 @@ YR_USER_AGENT="YourApp/1.0 (your.email@example.com)"
 
 ### See it in action
 
-Visit the demo page to see Sortland, Norway weather:
+Visit the interactive demo page:
 
 ```
 http://yourapp.test/yr
+```
+
+The demo page features:
+- **Live weather display** for any location
+- **Location search** - Search by city name (e.g., "Oslo, Norway")
+- **Manual coordinates** - Enter latitude/longitude directly
+- **Real-time updates** - Weather components update as you change locations
+
+**Search by location:**
+```
+http://yourapp.test/yr?location=Tokyo,Japan
+```
+
+**Use specific coordinates:**
+```
+http://yourapp.test/yr?latitude=59.9139&longitude=10.7522&location_name=Oslo
 ```
 
 To disable the demo route, add to your `.env`:
