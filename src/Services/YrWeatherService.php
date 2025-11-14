@@ -15,7 +15,7 @@ class YrWeatherService
 
     private int $cacheTtl;
 
-    private const string API_BASE_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/';
+    private const API_BASE_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/';
 
     public function __construct(string $userAgent, int $cacheTtl = 3600)
     {

@@ -12,7 +12,7 @@ class GeocodingService
 
     private string $userAgent;
 
-    private const string NOMINATIM_URL = 'https://nominatim.openstreetmap.org';
+    private const NOMINATIM_URL = 'https://nominatim.openstreetmap.org';
 
     public function __construct(string $userAgent)
     {
