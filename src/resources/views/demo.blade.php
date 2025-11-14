@@ -144,6 +144,116 @@
             border-bottom-color: white;
             color: #ff6b6b;
         }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1.5rem 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 0.875rem;
+            }
+
+            .subtitle {
+                font-size: 0.9375rem;
+                margin-bottom: 2.5rem;
+            }
+
+            .info {
+                padding: 1.25rem;
+                margin-bottom: 1.75rem;
+                border-radius: 20px;
+            }
+
+            .info p {
+                font-size: 0.875rem;
+                margin: 0.375rem 0;
+            }
+
+            .info code {
+                font-size: 0.8125rem;
+                padding: 0.3rem 0.625rem;
+            }
+
+            .weather-section {
+                margin-bottom: 1.75rem;
+            }
+
+            .disable-note {
+                padding: 1.25rem;
+                margin-top: 2.5rem;
+                border-radius: 20px;
+                font-size: 0.8125rem;
+            }
+
+            .disable-note strong {
+                font-size: 0.9375rem;
+            }
+
+            .attribution {
+                font-size: 0.8125rem;
+                margin-top: 1.75rem;
+                padding: 0.875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem 0.75rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .subtitle {
+                font-size: 0.875rem;
+                margin-bottom: 2rem;
+            }
+
+            .info {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+                border-radius: 18px;
+            }
+
+            .info p {
+                font-size: 0.8125rem;
+                line-height: 1.6;
+            }
+
+            .info code {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+                display: inline-block;
+                margin: 0.125rem 0;
+            }
+
+            .weather-section {
+                margin-bottom: 1.5rem;
+            }
+
+            .disable-note {
+                padding: 1rem;
+                margin-top: 2rem;
+                border-radius: 18px;
+                font-size: 0.75rem;
+            }
+
+            .disable-note strong {
+                font-size: 0.875rem;
+                margin-bottom: 0.625rem;
+            }
+
+            .attribution {
+                font-size: 0.75rem;
+                margin-top: 1.5rem;
+                padding: 0.75rem;
+                line-height: 1.6;
+            }
+        }
     </style>
 </head>
 <body>

@@ -321,31 +321,92 @@
         background-clip: text;
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
         .yr-weather-card {
-            padding: 2rem;
+            padding: 1.75rem;
             border-radius: 24px;
         }
 
         .weather-location {
-            font-size: 1.5rem;
+            font-size: 1.375rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .weather-main {
+            flex-direction: column;
+            gap: 1.25rem;
+            margin: 1.5rem 0;
         }
 
         .weather-temp {
-            font-size: 3.5rem;
+            font-size: 3.25rem;
         }
 
         .weather-icon {
-            width: 80px;
-            height: 80px;
+            width: 72px;
+            height: 72px;
+        }
+
+        .weather-details {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        .weather-detail {
+            padding: 0.875rem;
+            gap: 0.625rem;
+        }
+
+        .detail-label {
+            font-size: 0.65rem;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+        }
+
+        .weather-footer {
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+        }
+
+        .weather-time {
+            font-size: 0.75rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .yr-weather-card {
+            padding: 1.5rem;
+            border-radius: 20px;
+        }
+
+        .weather-location {
+            font-size: 1.25rem;
+        }
+
+        .weather-temp {
+            font-size: 2.75rem;
+        }
+
+        .weather-icon {
+            width: 64px;
+            height: 64px;
+        }
+
+        .feels-like {
+            font-size: 0.7rem;
         }
 
         .weather-details {
             grid-template-columns: 1fr;
+            gap: 0.625rem;
         }
 
-        .weather-detail {
-            padding: 1rem;
+        .detail-icon {
+            width: 18px;
+            height: 18px;
         }
     }
 </style>

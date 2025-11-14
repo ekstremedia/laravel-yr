@@ -491,10 +491,45 @@
     }
 
     @media (max-width: 768px) {
+        .yr-forecast-card-purple {
+            padding: 1.75rem;
+            border-radius: 24px;
+        }
+
+        .forecast-header-purple {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+        }
+
+        .forecast-title-purple {
+            font-size: 1.375rem;
+        }
+
+        .forecast-coordinates {
+            font-size: 0.65rem;
+        }
+
+        .forecast-days-container {
+            gap: 0.875rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .day-row {
+            border-radius: 20px;
+        }
+
         .day-summary {
             grid-template-columns: 1fr 60px 120px 30px;
             gap: 1rem;
             padding: 1rem 1.25rem;
+        }
+
+        .day-name-large {
+            font-size: 1rem;
+        }
+
+        .day-date-small {
+            font-size: 0.65rem;
         }
 
         .day-stats {
@@ -503,8 +538,16 @@
             margin-top: 0.5rem;
         }
 
+        .stat-item {
+            font-size: 0.75rem;
+        }
+
         .temp-range-large {
             font-size: 1.5rem;
+        }
+
+        .temp-low-large {
+            font-size: 1.25rem;
         }
 
         .day-icon {
@@ -512,10 +555,23 @@
             height: 48px;
         }
 
+        .timeseries-list {
+            padding: 0.5rem;
+        }
+
         .hour-row {
             grid-template-columns: 55px 45px 75px 90px 80px 80px 80px;
             gap: 0.75rem;
             padding: 0.5rem 1rem;
+        }
+
+        .hour-time-col {
+            font-size: 0.8125rem;
+        }
+
+        .hour-icon-small {
+            width: 34px;
+            height: 34px;
         }
 
         .temp-value {
@@ -536,6 +592,28 @@
     @media (max-width: 640px) {
         .yr-forecast-card-purple {
             padding: 1.5rem;
+            border-radius: 20px;
+        }
+
+        .forecast-header-purple {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.25rem;
+        }
+
+        .forecast-title-purple {
+            font-size: 1.25rem;
+        }
+
+        .forecast-coordinates {
+            font-size: 0.625rem;
+        }
+
+        .forecast-days-container {
+            gap: 0.75rem;
+        }
+
+        .day-row {
+            border-radius: 18px;
         }
 
         .day-summary {
@@ -544,10 +622,18 @@
             padding: 1rem;
         }
 
+        .day-name-large {
+            font-size: 0.9375rem;
+        }
+
         .temp-range-large {
             grid-column: 1 / -1;
             font-size: 1.375rem;
             margin-top: 0.5rem;
+        }
+
+        .temp-low-large {
+            font-size: 1.125rem;
         }
 
         .day-stats {
@@ -597,6 +683,99 @@
         .hour-wind-col:empty,
         .hour-humidity-col:empty {
             display: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .yr-forecast-card-purple {
+            padding: 1.25rem;
+            border-radius: 18px;
+        }
+
+        .forecast-header-purple {
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+        }
+
+        .forecast-title-purple {
+            font-size: 1.125rem;
+        }
+
+        .forecast-coordinates {
+            font-size: 0.6rem;
+        }
+
+        .forecast-days-container {
+            gap: 0.625rem;
+            margin-bottom: 1rem;
+        }
+
+        .day-row {
+            border-radius: 16px;
+        }
+
+        .day-summary {
+            padding: 0.875rem;
+        }
+
+        .day-name-large {
+            font-size: 0.875rem;
+        }
+
+        .day-date-small {
+            font-size: 0.6rem;
+        }
+
+        .temp-range-large {
+            font-size: 1.25rem;
+            margin-top: 0.375rem;
+        }
+
+        .temp-low-large {
+            font-size: 1rem;
+        }
+
+        .day-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        .stat-item {
+            font-size: 0.6875rem;
+        }
+
+        .timeseries-list {
+            padding: 0.375rem;
+        }
+
+        .hour-row {
+            padding: 0.5rem;
+            margin-bottom: 0.125rem;
+        }
+
+        .hour-time-col {
+            font-size: 0.75rem;
+        }
+
+        .hour-icon-small {
+            width: 28px;
+            height: 28px;
+        }
+
+        .temp-value {
+            font-size: 0.9375rem;
+        }
+
+        .feels-value {
+            font-size: 0.6rem;
+        }
+
+        .hour-feels-col,
+        .hour-rain-col,
+        .hour-wind-col,
+        .hour-humidity-col {
+            font-size: 0.625rem;
+            padding-left: 0.375rem;
         }
     }
 </style>
