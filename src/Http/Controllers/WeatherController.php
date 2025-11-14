@@ -1,13 +1,13 @@
 <?php
 
-namespace YourVendor\LaravelYr\Http\Controllers;
+namespace Ekstremedia\LaravelYr\Http\Controllers;
 
+use Ekstremedia\LaravelYr\Services\GeocodingService;
+use Ekstremedia\LaravelYr\Services\YrWeatherService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
-use YourVendor\LaravelYr\Services\GeocodingService;
-use YourVendor\LaravelYr\Services\YrWeatherService;
 
 /**
  * Weather API Controller

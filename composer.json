@@ -1,15 +1,20 @@
 {
-    "name": "your-vendor/laravel-yr",
+    "name": "ekstremedia/laravel-yr",
     "description": "A lightweight Laravel package for integrating weather data from Yr (api.met.no)",
-    "keywords": ["laravel", "weather", "yr", "met.no"],
+    "keywords": ["laravel", "weather", "yr", "met.no", "norway", "forecast"],
     "type": "library",
     "license": "MIT",
+    "homepage": "https://github.com/ekstremedia/laravel-yr",
     "authors": [
         {
-            "name": "Your Name",
-            "email": "your.email@example.com"
+            "name": "Terje Nesthus",
+            "email": "terje@ekstremedia.no"
         }
     ],
+    "support": {
+        "issues": "https://github.com/ekstremedia/laravel-yr/issues",
+        "source": "https://github.com/ekstremedia/laravel-yr"
+    },
     "require": {
         "php": "^8.2",
         "illuminate/support": "^10.0|^11.0|^12.0",
@@ -23,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "YourVendor\\LaravelYr\\": "src/"
+            "Ekstremedia\\LaravelYr\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "YourVendor\\LaravelYr\\Tests\\": "tests/"
+            "Ekstremedia\\LaravelYr\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -40,7 +45,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "YourVendor\\LaravelYr\\YrServiceProvider"
+                "Ekstremedia\\LaravelYr\\YrServiceProvider"
             ]
         }
     },

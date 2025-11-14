@@ -1,6 +1,6 @@
 <?php
 
-use YourVendor\LaravelYr\Services\GeocodingService;
+use Ekstremedia\LaravelYr\Services\GeocodingService;
 
 beforeEach(function () {
     $this->service = app(GeocodingService::class);

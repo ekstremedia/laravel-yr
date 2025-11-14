@@ -1,6 +1,6 @@
 <?php
 
-use YourVendor\LaravelYr\Services\YrWeatherService;
+use Ekstremedia\LaravelYr\Services\YrWeatherService;
 
 beforeEach(function () {
     $this->service = app(YrWeatherService::class);

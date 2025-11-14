@@ -1,6 +1,6 @@
 <?php
 
-namespace YourVendor\LaravelYr\Services;
+namespace Ekstremedia\LaravelYr\Services;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;

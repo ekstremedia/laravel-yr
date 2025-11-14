@@ -1,9 +1,9 @@
 <?php
 
-namespace YourVendor\LaravelYr\Tests;
+namespace Ekstremedia\LaravelYr\Tests;
 
+use Ekstremedia\LaravelYr\YrServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
-use YourVendor\LaravelYr\YrServiceProvider;
 
 class TestCase extends Orchestra
 {

@@ -1,5 +1,5 @@
 <?php
 
-use YourVendor\LaravelYr\Tests\TestCase;
+use Ekstremedia\LaravelYr\Tests\TestCase;
 
 uses(TestCase::class)->in('Feature', 'Unit');

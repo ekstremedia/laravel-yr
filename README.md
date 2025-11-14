@@ -5,7 +5,7 @@ Get weather data from [Yr (MET Norway)](https://api.met.no/) in your Laravel app
 ## Installation
 
 ```bash
-composer require your-vendor/laravel-yr
+composer require ekstremedia/laravel-yr
 ```
 
 Publish the config:
@@ -82,7 +82,7 @@ GET /api/weather/forecast?lat=59.9139&lon=10.7522
 ### In your routes
 
 ```php
-use YourVendor\LaravelYr\Http\Controllers\WeatherController;
+use Ekstremedia\LaravelYr\Http\Controllers\WeatherController;
 
 Route::get('weather/current', [WeatherController::class, 'current']);
 Route::get('weather/forecast', [WeatherController::class, 'forecast']);
@@ -91,7 +91,7 @@ Route::get('weather/forecast', [WeatherController::class, 'forecast']);
 ### In your code
 
 ```php
-use YourVendor\LaravelYr\Services\YrWeatherService;
+use Ekstremedia\LaravelYr\Services\YrWeatherService;
 
 $weather = app(YrWeatherService::class)->getCurrentWeather(59.9139, 10.7522);
 
@@ -153,17 +153,15 @@ return [
 
 Weather data is automatically cached to avoid hitting the API too often.
 
-## Norwegian Cities
+### How caching works
 
-Some coordinates to get you started:
+The package intelligently caches all API requests:
 
-```php
-Oslo      → 59.9139, 10.7522
-Bergen    → 60.3913, 5.3221
-Trondheim → 63.4305, 10.3951
-Stavanger → 58.9700, 5.7331
-Tromsø    → 69.6492, 18.9553
-```
+- **Weather data**: Cached by coordinates and parameters. The cache automatically respects the `Expires` header from MET Norway's API, typically updating every hour.
+- **Geocoding**: Address lookups are cached for 7 days to minimize requests to the geocoding service.
+- **Conditional requests**: The package uses `If-Modified-Since` headers to check if data has changed, reducing bandwidth usage.
+
+All GET endpoints (`/api/weather/current` and `/api/weather/forecast`) benefit from this caching layer, ensuring fast responses while respecting API rate limits.
 
 ## Customization
 

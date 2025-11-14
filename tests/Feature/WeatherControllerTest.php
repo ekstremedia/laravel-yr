@@ -1,7 +1,7 @@
 <?php
 
+use Ekstremedia\LaravelYr\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
-use YourVendor\LaravelYr\Http\Controllers\WeatherController;
 
 beforeEach(function () {
     Route::get('/api/weather/current', [WeatherController::class, 'current']);

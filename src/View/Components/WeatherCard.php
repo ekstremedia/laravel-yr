@@ -1,9 +1,9 @@
 <?php
 
-namespace YourVendor\LaravelYr\View\Components;
+namespace Ekstremedia\LaravelYr\View\Components;
 
+use Ekstremedia\LaravelYr\Services\YrWeatherService;
 use Illuminate\View\Component;
-use YourVendor\LaravelYr\Services\YrWeatherService;
 
 class WeatherCard extends Component
 {

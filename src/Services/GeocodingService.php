@@ -1,6 +1,6 @@
 <?php
 
-namespace YourVendor\LaravelYr\Services;
+namespace Ekstremedia\LaravelYr\Services;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;

@@ -1,12 +1,12 @@
 <?php
 
-namespace YourVendor\LaravelYr;
+namespace Ekstremedia\LaravelYr;
 
+use Ekstremedia\LaravelYr\Services\GeocodingService;
+use Ekstremedia\LaravelYr\Services\YrWeatherService;
+use Ekstremedia\LaravelYr\View\Components\ForecastCard;
+use Ekstremedia\LaravelYr\View\Components\WeatherCard;
 use Illuminate\Support\ServiceProvider;
-use YourVendor\LaravelYr\Services\GeocodingService;
-use YourVendor\LaravelYr\Services\YrWeatherService;
-use YourVendor\LaravelYr\View\Components\ForecastCard;
-use YourVendor\LaravelYr\View\Components\WeatherCard;
 
 class YrServiceProvider extends ServiceProvider
 {
