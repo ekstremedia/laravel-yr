@@ -15,7 +15,7 @@ class YrWeatherService
 
     private int $cacheTtl;
 
-    private const API_BASE_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/';
+    private const string API_BASE_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/';
 
     public function __construct(string $userAgent, int $cacheTtl = 3600)
     {
@@ -37,9 +37,14 @@ class YrWeatherService
      */
     public function getForecast(float $latitude, float $longitude, ?int $altitude = null, bool $complete = false): ?array
     {
-        $cacheKey = "yr_weather_{$latitude}_{$longitude}_".($altitude ?? 'auto').'_'.($complete ? 'complete' : 'compact');
+        // Truncate coordinates to max 4 decimals per MET API TOS
+        $latitude = round($latitude, 4);
+        $longitude = round($longitude, 4);
 
-        return Cache::remember($cacheKey, $this->cacheTtl, function () use ($latitude, $longitude, $altitude, $complete) {
+        $cacheKey = "yr_weather_{$latitude}_{$longitude}_".($altitude ?? 'auto').'_'.($complete ? 'complete' : 'compact');
+        $cacheMetaKey = "{$cacheKey}_meta";
+
+        return Cache::remember($cacheKey, $this->cacheTtl, function () use ($latitude, $longitude, $altitude, $complete, $cacheKey, $cacheMetaKey) {
             try {
                 $query = [
                     'lat' => $latitude,
@@ -52,11 +57,29 @@ class YrWeatherService
 
                 $endpoint = $complete ? 'complete' : 'compact';
 
-                $response = $this->client->get($endpoint, [
-                    'query' => $query,
-                ]);
+                // Add If-Modified-Since header if we have cached metadata
+                $requestOptions = ['query' => $query];
+                $cachedMeta = Cache::get($cacheMetaKey);
+                if ($cachedMeta && isset($cachedMeta['last_modified'])) {
+                    $requestOptions['headers'] = [
+                        'If-Modified-Since' => $cachedMeta['last_modified'],
+                    ];
+                }
 
-                $data = json_decode($response->getBody()->getContents(), true);
+                $response = $this->client->get($endpoint, $requestOptions);
+
+                // If 304 Not Modified, return cached data
+                if ($response->getStatusCode() === 304) {
+                    return Cache::get($cacheKey);
+                }
+
+                $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+
+                // Store Last-Modified header for future If-Modified-Since requests
+                $lastModified = $response->getHeader('Last-Modified')[0] ?? null;
+                if ($lastModified) {
+                    Cache::put($cacheMetaKey, ['last_modified' => $lastModified], $this->cacheTtl);
+                }
 
                 // Get cache TTL from Expires header if available
                 $expiresHeader = $response->getHeader('Expires')[0] ?? null;
@@ -187,10 +210,26 @@ class YrWeatherService
     }
 
     /**
-     * Get weather symbol URL from met.no
+     * Get weather symbol URL (local SVG or fallback to met.no)
      */
     public function getSymbolUrl(string $symbolCode): string
     {
+        // Check if local symbol exists in published public directory
+        $publicPath = public_path("vendor/laravel-yr/symbols/{$symbolCode}.svg");
+        if (file_exists($publicPath)) {
+            return asset("vendor/laravel-yr/symbols/{$symbolCode}.svg");
+        }
+
+        // Check if symbol exists in package resources (for development)
+        $packagePath = __DIR__."/resources/symbols/{$symbolCode}.svg";
+        if (file_exists($packagePath)) {
+            // Return data URI for package symbols when not published
+            $svg = file_get_contents($packagePath);
+
+            return 'data:image/svg+xml;base64,'.base64_encode($svg);
+        }
+
+        // Fallback to MET.no API
         return "https://api.met.no/weatherapi/weathericon/2.0/?symbol={$symbolCode}&content_type=image/svg+xml";
     }
 }

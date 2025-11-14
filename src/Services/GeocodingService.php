@@ -12,7 +12,7 @@ class GeocodingService
 
     private string $userAgent;
 
-    private const NOMINATIM_URL = 'https://nominatim.openstreetmap.org';
+    private const string NOMINATIM_URL = 'https://nominatim.openstreetmap.org';
 
     public function __construct(string $userAgent)
     {
@@ -53,9 +53,10 @@ class GeocodingService
 
                 $result = $data[0];
 
+                // Truncate to max 4 decimals per MET API TOS
                 return [
-                    'latitude' => (float) $result['lat'],
-                    'longitude' => (float) $result['lon'],
+                    'latitude' => round((float) $result['lat'], 4),
+                    'longitude' => round((float) $result['lon'], 4),
                     'display_name' => $result['display_name'],
                     'address' => $result['address'] ?? [],
                 ];

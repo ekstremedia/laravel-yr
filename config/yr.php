@@ -26,4 +26,15 @@ return [
     |
     */
     'cache_ttl' => env('YR_CACHE_TTL', 3600),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Demo Route
+    |--------------------------------------------------------------------------
+    |
+    | Enable the /yr demo route to see an example weather display.
+    | Set to true to enable, false to disable.
+    |
+    */
+    'enable_demo_route' => env('YR_DEMO_ROUTE', true),
 ];

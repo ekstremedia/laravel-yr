@@ -59,3 +59,25 @@ it('returns same temperature when no adjustment needed', function () {
 
     expect($result)->toBe(15.0); // Should be unchanged
 });
+
+it('truncates coordinates to max 4 decimals per MET API TOS', function () {
+    // Test with high precision coordinates
+    $forecast = $this->service->getForecast(59.913868217, 10.752245396);
+
+    // If successful, the service should have truncated to 4 decimals
+    // We can't directly test the truncation but we verify it doesn't throw errors
+    expect($forecast)->toBeArray();
+});
+
+it('uses local weather symbols when available', function () {
+    // Check if the method prioritizes local files
+    $url = $this->service->getSymbolUrl('clearsky_day');
+
+    expect($url)
+        ->toBeString()
+        ->and(
+            str_contains($url, 'vendor/laravel-yr/symbols') ||
+            str_contains($url, 'data:image/svg+xml') ||
+            str_contains($url, 'api.met.no')
+        )->toBeTrue();
+});

@@ -24,6 +24,19 @@ YR_USER_AGENT="YourApp/1.0 (your.email@example.com)"
 
 ## Quick Start
 
+### See it in action
+
+Visit the demo page to see Sortland, Norway weather:
+
+```
+http://yourapp.test/yr
+```
+
+To disable the demo route, add to your `.env`:
+```env
+YR_DEMO_ROUTE=false
+```
+
 ### Get weather by coordinates
 
 ```http
@@ -87,11 +100,22 @@ return view('weather', ['weather' => $weather]);
 
 ### In Blade templates
 
+**Current weather:**
 ```blade
 <x-yr-weather-card
     :latitude="59.9139"
     :longitude="10.7522"
     location="Oslo, Norway"
+/>
+```
+
+**5-Day Forecast:**
+```blade
+<x-yr-forecast-card
+    :latitude="59.9139"
+    :longitude="10.7522"
+    location="Oslo"
+    :days="5"
 />
 ```
 
@@ -151,10 +175,46 @@ php artisan vendor:publish --tag=yr-views
 
 Then edit `resources/views/vendor/laravel-yr/components/weather-card.blade.php`.
 
+Want to use local weather icons? Publish the symbols:
+
+```bash
+php artisan vendor:publish --tag=yr-symbols
+```
+
+This copies 83 weather symbol SVGs to `public/vendor/laravel-yr/symbols`.
+
+## Licensing and Attribution
+
+### Weather Data
+
+All weather data is provided by [The Norwegian Meteorological Institute (MET Norway)](https://www.met.no/) and is licensed under:
+- [Norwegian Licence for Open Government Data (NLOD) 2.0](https://data.norge.no/nlod/en/2.0)
+- [Creative Commons 4.0 BY International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)
+
+When using this package, you must provide appropriate credit to MET Norway as the source of the weather data. The package components automatically include the required attribution.
+
+**Required Attribution:**
+"Weather data from The Norwegian Meteorological Institute (MET Norway)"
+
+For more details, see [MET Norway's Licensing and Crediting Policy](https://api.met.no/doc/License).
+
+### Weather Icons
+
+The weather symbol SVG files are licensed under the [MIT License](src/resources/symbols/LICENSE).
+Copyright (c) 2015-2017 Yr.no.
+
+### Package Code
+
+This Laravel package code is licensed under the MIT License.
+
 ## Credits
 
-Weather data from [MET Norway](https://api.met.no/). Thanks for the awesome API!
+- Weather data: [The Norwegian Meteorological Institute (MET Norway)](https://www.met.no/)
+- Weather icons: [Yr.no](https://www.yr.no/)
+- Package developed for easy integration of Norwegian weather data in Laravel applications
 
 ## License
 
-MIT
+MIT License - See LICENSE file for details
+
+Note: This package's MIT license applies only to the package code itself. Weather data and icons have their own licenses as stated above.

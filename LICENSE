@@ -1,0 +1,43 @@
+MIT License
+
+Copyright (c) 2024 Laravel Yr Weather Package
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+IMPORTANT NOTICES:
+
+This MIT license applies ONLY to the Laravel package code itself.
+
+Weather Data License:
+All weather data provided through this package is from The Norwegian
+Meteorological Institute (MET Norway) and is licensed under:
+- Norwegian Licence for Open Government Data (NLOD) 2.0
+- Creative Commons 4.0 BY International (CC BY 4.0)
+
+Required attribution: "Weather data from The Norwegian Meteorological
+Institute (MET Norway)"
+
+For details: https://api.met.no/doc/License
+
+Weather Icons License:
+Weather symbol SVG files in src/resources/symbols/ are licensed under
+the MIT License. Copyright (c) 2015-2017 Yr.no.
+See src/resources/symbols/LICENSE for details.

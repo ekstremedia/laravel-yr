@@ -5,6 +5,7 @@ namespace YourVendor\LaravelYr;
 use Illuminate\Support\ServiceProvider;
 use YourVendor\LaravelYr\Services\GeocodingService;
 use YourVendor\LaravelYr\Services\YrWeatherService;
+use YourVendor\LaravelYr\View\Components\ForecastCard;
 use YourVendor\LaravelYr\View\Components\WeatherCard;
 
 class YrServiceProvider extends ServiceProvider
@@ -39,12 +40,22 @@ class YrServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/resources/views' => resource_path('views/vendor/laravel-yr'),
             ], 'yr-views');
+
+            $this->publishes([
+                __DIR__.'/resources/symbols' => public_path('vendor/laravel-yr/symbols'),
+            ], 'yr-symbols');
         }
 
         $this->loadViewsFrom(__DIR__.'/resources/views', 'laravel-yr');
 
         $this->loadViewComponentsAs('yr', [
             WeatherCard::class,
+            ForecastCard::class,
         ]);
+
+        // Register demo route if enabled
+        if (config('yr.enable_demo_route', true)) {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        }
     }
 }

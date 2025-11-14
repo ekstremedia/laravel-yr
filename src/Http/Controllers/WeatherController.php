@@ -9,6 +9,23 @@ use Illuminate\Support\Facades\Validator;
 use YourVendor\LaravelYr\Services\GeocodingService;
 use YourVendor\LaravelYr\Services\YrWeatherService;
 
+/**
+ * Weather API Controller
+ *
+ * IMPORTANT: Attribution Requirements
+ * ====================================
+ * All weather data served through this API comes from The Norwegian Meteorological
+ * Institute (MET Norway) and is licensed under:
+ * - Norwegian Licence for Open Government Data (NLOD) 2.0
+ * - Creative Commons 4.0 BY International (CC BY 4.0)
+ *
+ * When displaying this data in your application, you MUST provide appropriate
+ * attribution to MET Norway. Example:
+ * "Weather data from The Norwegian Meteorological Institute (MET Norway)"
+ *
+ * For full licensing details, see:
+ * https://api.met.no/doc/License
+ */
 class WeatherController extends Controller
 {
     public function __construct(
