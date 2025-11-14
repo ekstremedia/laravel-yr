@@ -77,55 +77,55 @@
                                     </div>
 
                                     <div class="hour-temp-col">
-                                        <div class="temp-main">
-                                            <span class="temp-value {{ ($hour['temperature'] ?? 0) > 0 ? 'temp-warm' : 'temp-cold' }}">{{ $hour['temperature'] !== null ? round($hour['temperature'], 1) . '°' : 'N/A' }}</span>
-                                        </div>
-                                        @if($hour['feels_like'] !== null && $hour['feels_like'] != $hour['temperature'])
-                                            <div class="temp-feels">
-                                                <span class="feels-value {{ ($hour['feels_like'] ?? 0) > 0 ? 'temp-warm' : 'temp-cold' }}">feels {{ round($hour['feels_like'], 1) }}°</span>
-                                            </div>
-                                        @endif
+                                        <span class="temp-value {{ ($hour['temperature'] ?? 0) > 0 ? 'temp-warm' : 'temp-cold' }}">{{ $hour['temperature'] !== null ? round($hour['temperature'], 1) . '°' : 'N/A' }}</span>
                                     </div>
 
-                                    <div class="hour-details-col">
-                                        @if($hour['precipitation_amount'] > 0)
-                                            <div class="detail-badge">
-                                                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                                                    <path d="M6 0C6 0 3 3 3 6C3 7.657 4.343 9 6 9C7.657 9 9 7.657 9 6C9 3 6 0 6 0Z"/>
-                                                </svg>
-                                                {{ $hour['precipitation_amount'] }}mm
-                                            </div>
-                                        @endif
-                                        @if($hour['wind_speed'] !== null)
-                                            <div class="detail-badge">
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2"/>
-                                                </svg>
-                                                {{ round($hour['wind_speed'], 1) }}m/s
-                                            </div>
-                                        @endif
-                                        @if($hour['humidity'] !== null)
-                                            <div class="detail-badge">
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-                                                </svg>
-                                                {{ round($hour['humidity']) }}%
-                                            </div>
-                                        @endif
-                                    </div>
+                                    @if($hour['feels_like'] !== null && $hour['feels_like'] != $hour['temperature'])
+                                        <div class="hour-feels-col">
+                                            <span class="feels-value {{ ($hour['feels_like'] ?? 0) > 0 ? 'temp-warm' : 'temp-cold' }}">feels {{ round($hour['feels_like'], 1) }}°</span>
+                                        </div>
+                                    @else
+                                        <div class="hour-feels-col"></div>
+                                    @endif
+
+                                    @if($hour['precipitation_amount'] > 0)
+                                        <div class="hour-rain-col">
+                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                                                <path d="M6 0C6 0 3 3 3 6C3 7.657 4.343 9 6 9C7.657 9 9 7.657 9 6C9 3 6 0 6 0Z"/>
+                                            </svg>
+                                            <span>{{ $hour['precipitation_amount'] }}mm</span>
+                                        </div>
+                                    @else
+                                        <div class="hour-rain-col"></div>
+                                    @endif
+
+                                    @if($hour['wind_speed'] !== null)
+                                        <div class="hour-wind-col">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2"/>
+                                            </svg>
+                                            <span>{{ round($hour['wind_speed'], 1) }}m/s</span>
+                                        </div>
+                                    @else
+                                        <div class="hour-wind-col"></div>
+                                    @endif
+
+                                    @if($hour['humidity'] !== null)
+                                        <div class="hour-humidity-col">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                                            </svg>
+                                            <span>{{ round($hour['humidity']) }}%</span>
+                                        </div>
+                                    @else
+                                        <div class="hour-humidity-col"></div>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
                     </div>
                 </div>
             @endforeach
-        </div>
-
-        <div class="forecast-attribution-purple">
-            <small>
-                Weather data from <a href="https://www.met.no/" target="_blank" rel="noopener">The Norwegian Meteorological Institute (MET Norway)</a><br>
-                Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> and <a href="https://data.norge.no/nlod/en/2.0" target="_blank" rel="noopener">NLOD 2.0</a>
-            </small>
         </div>
     @else
         <div class="forecast-error-purple">
@@ -138,15 +138,15 @@
 
 <style>
     .yr-forecast-card-purple {
-        background: rgba(46, 16, 101, 0.7);
-        backdrop-filter: blur(24px) saturate(180%);
-        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        background: rgba(20, 10, 40, 0.65);
+        backdrop-filter: blur(32px) saturate(120%);
+        -webkit-backdrop-filter: blur(32px) saturate(120%);
         border-radius: 28px;
-        border: 1px solid rgba(88, 28, 135, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         padding: 2rem;
         color: white;
-        box-shadow: 0 12px 40px rgba(46, 16, 101, 0.5),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05);
         width: 100%;
     }
 
@@ -179,19 +179,15 @@
     }
 
     .day-row {
-        background: rgba(46, 16, 101, 0.5);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        background: transparent;
         border-radius: 20px;
-        border: 1px solid rgba(88, 28, 135, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         overflow: hidden;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .day-row:hover {
-        background: rgba(46, 16, 101, 0.65);
-        border-color: rgba(109, 40, 217, 0.7);
-        box-shadow: 0 8px 24px rgba(46, 16, 101, 0.4);
+        border-color: rgba(255, 255, 255, 0.15);
     }
 
     .day-summary {
@@ -205,7 +201,7 @@
     }
 
     .day-summary:hover {
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.05);
     }
 
     .day-info {
@@ -292,15 +288,12 @@
         align-items: center;
         gap: 0.4rem;
         font-size: 0.8125rem;
-        color: rgba(255, 255, 255, 0.95);
-        padding: 0.4rem 0.65rem;
-        background: rgba(46, 16, 101, 0.5);
-        border-radius: 10px;
-        border: 1px solid rgba(88, 28, 135, 0.6);
+        color: rgba(255, 255, 255, 0.7);
     }
 
     .stat-item svg {
         flex-shrink: 0;
+        opacity: 0.6;
     }
 
     .expand-icon {
@@ -316,8 +309,8 @@
     }
 
     .timeseries-container {
-        border-top: 1px solid rgba(88, 28, 135, 0.5);
-        background: rgba(30, 3, 66, 0.4);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        background: transparent;
     }
 
     .timeseries-list {
@@ -328,16 +321,13 @@
 
     .hour-row {
         display: grid;
-        grid-template-columns: 70px 50px 140px 1fr;
+        grid-template-columns: 60px 50px 80px 100px 90px 90px 90px;
         align-items: center;
-        gap: 1.25rem;
+        gap: 1rem;
         padding: 0.625rem 1.25rem;
-        background: rgba(46, 16, 101, 0.5);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        background: transparent;
         border-radius: 10px;
-        border: 1px solid rgba(88, 28, 135, 0.5);
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.25rem;
         transition: all 0.2s ease;
     }
 
@@ -346,10 +336,7 @@
     }
 
     .hour-row:hover {
-        background: rgba(46, 16, 101, 0.7);
-        border-color: rgba(109, 40, 217, 0.7);
-        box-shadow: 0 2px 12px rgba(46, 16, 101, 0.4);
-        transform: translateX(4px);
+        background: rgba(255, 255, 255, 0.05);
     }
 
     .hour-time-col {
@@ -357,8 +344,6 @@
         font-weight: 600;
         color: #ffffff;
         letter-spacing: 0.3px;
-        display: flex;
-        align-items: center;
     }
 
     .hour-icon-col {
@@ -375,21 +360,15 @@
 
     .hour-temp-col {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 0.125rem;
-    }
-
-    .temp-main {
-        display: flex;
         align-items: center;
+        justify-content: center;
     }
 
     .temp-value {
         font-size: 1.25rem;
         font-weight: 700;
         text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-        line-height: 1.2;
+        line-height: 1;
     }
 
     .temp-value.temp-warm {
@@ -402,17 +381,18 @@
         text-shadow: 0 2px 8px rgba(77, 171, 247, 0.5);
     }
 
-    .temp-feels {
+    .hour-feels-col {
         display: flex;
         align-items: center;
+        justify-content: center;
     }
 
     .feels-value {
         font-size: 0.75rem;
         font-weight: 500;
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-        line-height: 1.2;
-        opacity: 0.85;
+        line-height: 1;
+        opacity: 0.8;
     }
 
     .feels-value.temp-warm {
@@ -423,35 +403,28 @@
         color: #74c0fc;
     }
 
-    .hour-details-col {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-items: center;
-    }
-
-    .detail-badge {
+    .hour-rain-col,
+    .hour-wind-col,
+    .hour-humidity-col {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 0.35rem;
         font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.95);
-        padding: 0.3rem 0.6rem;
-        background: rgba(46, 16, 101, 0.5);
-        border-radius: 8px;
-        border: 1px solid rgba(88, 28, 135, 0.6);
-        white-space: nowrap;
+        color: rgba(255, 255, 255, 0.7);
     }
 
-    .detail-badge svg {
+    .hour-rain-col svg,
+    .hour-wind-col svg,
+    .hour-humidity-col svg {
         flex-shrink: 0;
+        opacity: 0.6;
     }
 
     .forecast-attribution-purple {
         text-align: center;
         padding-top: 1.5rem;
-        border-top: 1px solid rgba(88, 28, 135, 0.5);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
         margin-top: 1.5rem;
     }
 
@@ -501,8 +474,8 @@
         }
 
         .hour-row {
-            grid-template-columns: 65px 45px 120px 1fr;
-            gap: 1rem;
+            grid-template-columns: 55px 45px 75px 90px 80px 80px 80px;
+            gap: 0.75rem;
             padding: 0.5rem 1rem;
         }
 
@@ -511,6 +484,12 @@
         }
 
         .feels-value {
+            font-size: 0.6875rem;
+        }
+
+        .hour-rain-col,
+        .hour-wind-col,
+        .hour-humidity-col {
             font-size: 0.6875rem;
         }
     }
@@ -546,7 +525,7 @@
         }
 
         .hour-row {
-            grid-template-columns: 55px 38px 90px 1fr;
+            grid-template-columns: 50px 38px 1fr;
             gap: 0.75rem;
             padding: 0.5rem 0.75rem;
         }
@@ -564,17 +543,21 @@
             font-size: 0.625rem;
         }
 
-        .hour-details-col {
+        .hour-feels-col,
+        .hour-rain-col,
+        .hour-wind-col,
+        .hour-humidity-col {
             grid-column: 1 / -1;
             justify-content: flex-start;
-            padding-top: 0.5rem;
-            border-top: 1px solid rgba(88, 28, 135, 0.4);
-            margin-top: 0.25rem;
+            font-size: 0.6875rem;
+            padding-left: 0.5rem;
         }
 
-        .detail-badge {
-            font-size: 0.6875rem;
-            padding: 0.25rem 0.5rem;
+        .hour-feels-col:empty,
+        .hour-rain-col:empty,
+        .hour-wind-col:empty,
+        .hour-humidity-col:empty {
+            display: none;
         }
     }
 </style>

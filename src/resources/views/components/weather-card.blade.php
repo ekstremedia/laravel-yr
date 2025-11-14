@@ -94,16 +94,16 @@
 
 <style>
     .yr-weather-card {
-        background: rgba(46, 16, 101, 0.7);
-        backdrop-filter: blur(24px) saturate(180%);
-        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        background: rgba(20, 10, 40, 0.65);
+        backdrop-filter: blur(32px) saturate(120%);
+        -webkit-backdrop-filter: blur(32px) saturate(120%);
         border-radius: 28px;
-        border: 1px solid rgba(88, 28, 135, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         padding: 2rem;
         color: white;
         width: 100%;
-        box-shadow: 0 12px 40px rgba(46, 16, 101, 0.5),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
     .weather-location {
@@ -179,19 +179,15 @@
         align-items: center;
         gap: 0.75rem;
         padding: 1rem;
-        background: rgba(46, 16, 101, 0.5);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        background: transparent;
         border-radius: 14px;
-        border: 1px solid rgba(88, 28, 135, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         transition: all 0.3s ease;
     }
 
     .weather-detail:hover {
-        background: rgba(46, 16, 101, 0.7);
-        border-color: rgba(109, 40, 217, 0.8);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(46, 16, 101, 0.5);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.15);
     }
 
     .detail-icon {
@@ -223,7 +219,7 @@
     .weather-footer {
         margin-top: 1.5rem;
         padding-top: 1.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.25);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .weather-time {

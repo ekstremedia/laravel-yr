@@ -101,18 +101,18 @@
         }
 
         .disable-note {
-            background: rgba(76, 29, 149, 0.35);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            background: rgba(20, 10, 40, 0.5);
+            backdrop-filter: blur(24px) saturate(120%);
+            -webkit-backdrop-filter: blur(24px) saturate(120%);
             border-radius: 20px;
-            border: 1px solid rgba(109, 40, 217, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 1.25rem;
             color: white;
             margin-top: 3rem;
             font-size: 0.875rem;
             text-align: center;
-            box-shadow: 0 12px 40px rgba(76, 29, 149, 0.3),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
 
         .disable-note strong {
