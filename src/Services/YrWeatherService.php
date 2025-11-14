@@ -15,7 +15,7 @@ class YrWeatherService
 
     private int $cacheTtl;
 
-    private const API_BASE_URL = 'https://api.met.no/weatherapi/locationforecast/2.0';
+    private const API_BASE_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/';
 
     public function __construct(string $userAgent, int $cacheTtl = 3600)
     {
@@ -32,11 +32,8 @@ class YrWeatherService
     /**
      * Get weather forecast for given coordinates
      *
-     * @param  float  $latitude
-     * @param  float  $longitude
      * @param  int|null  $altitude  Altitude in meters (optional but recommended)
      * @param  bool  $complete  Use complete endpoint with all data (default: false for compact)
-     * @return array|null
      */
     public function getForecast(float $latitude, float $longitude, ?int $altitude = null, bool $complete = false): ?array
     {
@@ -53,7 +50,7 @@ class YrWeatherService
                     $query['altitude'] = $altitude;
                 }
 
-                $endpoint = $complete ? '/complete' : '/compact';
+                $endpoint = $complete ? 'complete' : 'compact';
 
                 $response = $this->client->get($endpoint, [
                     'query' => $query,
@@ -73,18 +70,13 @@ class YrWeatherService
             } catch (GuzzleException $e) {
                 report($e);
 
-                return null;
+                return;
             }
         });
     }
 
     /**
      * Get current weather conditions
-     *
-     * @param  float  $latitude
-     * @param  float  $longitude
-     * @param  int|null  $altitude
-     * @return array|null
      */
     public function getCurrentWeather(float $latitude, float $longitude, ?int $altitude = null): ?array
     {
@@ -99,9 +91,6 @@ class YrWeatherService
 
     /**
      * Format raw API data into a more usable structure
-     *
-     * @param  array  $data
-     * @return array
      */
     private function formatWeatherData(array $data): array
     {
@@ -199,9 +188,6 @@ class YrWeatherService
 
     /**
      * Get weather symbol URL from met.no
-     *
-     * @param string $symbolCode
-     * @return string
      */
     public function getSymbolUrl(string $symbolCode): string
     {

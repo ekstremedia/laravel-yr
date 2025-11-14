@@ -8,7 +8,9 @@ use YourVendor\LaravelYr\Services\YrWeatherService;
 class WeatherCard extends Component
 {
     public ?array $weather;
+
     public string $location;
+
     public YrWeatherService $weatherService;
 
     public function __construct(
@@ -29,14 +31,14 @@ class WeatherCard extends Component
     public function getTemperature(): ?string
     {
         return $this->weather['temperature'] !== null
-            ? round($this->weather['temperature'], 1) . '°C'
+            ? round($this->weather['temperature'], 1).'°C'
             : null;
     }
 
     public function getWindSpeed(): ?string
     {
         return $this->weather['wind_speed'] !== null
-            ? round($this->weather['wind_speed'], 1) . ' m/s'
+            ? round($this->weather['wind_speed'], 1).' m/s'
             : null;
     }
 
@@ -45,6 +47,7 @@ class WeatherCard extends Component
         if ($this->weather['symbol_code'] ?? null) {
             return $this->weatherService->getSymbolUrl($this->weather['symbol_code']);
         }
+
         return null;
     }
 }

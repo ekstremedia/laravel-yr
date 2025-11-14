@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Cache;
 class GeocodingService
 {
     private Client $client;
+
     private string $userAgent;
+
     private const NOMINATIM_URL = 'https://nominatim.openstreetmap.org';
 
     public function __construct(string $userAgent)
@@ -26,7 +28,6 @@ class GeocodingService
     /**
      * Geocode an address to coordinates
      *
-     * @param  string  $address
      * @return array|null Returns ['latitude' => float, 'longitude' => float, 'display_name' => string] or null
      */
     public function geocode(string $address): ?array
@@ -47,7 +48,7 @@ class GeocodingService
                 $data = json_decode($response->getBody()->getContents(), true);
 
                 if (empty($data)) {
-                    return null;
+                    return;
                 }
 
                 $result = $data[0];
@@ -61,17 +62,13 @@ class GeocodingService
             } catch (GuzzleException $e) {
                 report($e);
 
-                return null;
+                return;
             }
         });
     }
 
     /**
      * Reverse geocode coordinates to an address
-     *
-     * @param  float  $latitude
-     * @param  float  $longitude
-     * @return array|null
      */
     public function reverseGeocode(float $latitude, float $longitude): ?array
     {
@@ -91,7 +88,7 @@ class GeocodingService
                 $data = json_decode($response->getBody()->getContents(), true);
 
                 if (empty($data)) {
-                    return null;
+                    return;
                 }
 
                 return [
@@ -101,7 +98,7 @@ class GeocodingService
             } catch (GuzzleException $e) {
                 report($e);
 
-                return null;
+                return;
             }
         });
     }

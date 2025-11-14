@@ -107,8 +107,6 @@ class WeatherController extends Controller
 
     /**
      * Resolve location from request (either coordinates or address)
-     *
-     * @return array
      */
     private function resolveLocation(Request $request): array
     {
