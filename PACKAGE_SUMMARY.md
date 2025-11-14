@@ -65,7 +65,7 @@ GET /api/weather/forecast?address=Bergen,Norway
 
 - ✅ **GitHub Actions Workflow**
   - Automated testing on push/PR
-  - PHP 8.1, 8.2, 8.3 support
+  - PHP 8.2, 8.3 support
   - Laravel 10, 11 compatibility matrix
   - Pint code style checks
   - Comprehensive CI/CD pipeline
