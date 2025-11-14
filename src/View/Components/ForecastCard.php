@@ -16,6 +16,10 @@ class ForecastCard extends Component
 
     public int $days;
 
+    public float $latitude;
+
+    public float $longitude;
+
     public function __construct(
         float $latitude,
         float $longitude,
@@ -26,6 +30,8 @@ class ForecastCard extends Component
         $this->forecast = $this->weatherService->getForecast($latitude, $longitude);
         $this->location = $location;
         $this->days = $days;
+        $this->latitude = round($latitude, 4);
+        $this->longitude = round($longitude, 4);
     }
 
     public function render()
@@ -52,6 +58,7 @@ class ForecastCard extends Component
                     'precipitation' => [],
                     'symbols' => [],
                     'wind_speeds' => [],
+                    'timeseries' => [],
                 ];
             }
 
@@ -70,6 +77,18 @@ class ForecastCard extends Component
             if ($entry['wind_speed'] !== null) {
                 $daily[$dateKey]['wind_speeds'][] = $entry['wind_speed'];
             }
+
+            // Add full timeseries entry
+            $daily[$dateKey]['timeseries'][] = [
+                'time' => $time,
+                'temperature' => $entry['temperature'],
+                'feels_like' => $entry['feels_like'],
+                'symbol_code' => $entry['symbol_code'],
+                'precipitation_amount' => $entry['precipitation_amount'] ?? 0,
+                'wind_speed' => $entry['wind_speed'],
+                'wind_direction' => $entry['wind_direction'],
+                'humidity' => $entry['humidity'],
+            ];
         }
 
         $result = [];
@@ -82,6 +101,7 @@ class ForecastCard extends Component
                 'precipitation' => ! empty($day['precipitation']) ? round(array_sum($day['precipitation']), 1) : 0,
                 'symbol_code' => $this->getMostFrequentSymbol($day['symbols']),
                 'wind_speed_avg' => ! empty($day['wind_speeds']) ? round(array_sum($day['wind_speeds']) / count($day['wind_speeds']), 1) : null,
+                'timeseries' => $day['timeseries'],
             ];
         }
 

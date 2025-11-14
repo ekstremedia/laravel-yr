@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+            background: linear-gradient(135deg, #1e0342 0%, #2e1065 25%, #4c1d95 50%, #581c87 75%, #6d28d9 100%);
             background-attachment: fixed;
             min-height: 100vh;
             display: flex;
@@ -55,28 +55,29 @@
             margin-bottom: 1rem;
             font-size: 2.5rem;
             font-weight: 700;
-            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
         .subtitle {
             text-align: center;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.95);
             font-size: 1rem;
             margin-bottom: 3rem;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .info {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(139, 92, 246, 0.15);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-radius: 24px;
+            border: 1px solid rgba(167, 139, 250, 0.3);
             padding: 1.5rem;
             color: white;
             margin-bottom: 2rem;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.2),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         .info p {
@@ -86,12 +87,13 @@
         }
 
         .info code {
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(109, 40, 217, 0.3);
             padding: 0.35rem 0.75rem;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 0.875rem;
             font-family: 'Monaco', 'Menlo', monospace;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            color: #fde047;
         }
 
         .weather-section {
@@ -99,17 +101,18 @@
         }
 
         .disable-note {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(76, 29, 149, 0.35);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-radius: 20px;
+            border: 1px solid rgba(109, 40, 217, 0.5);
             padding: 1.25rem;
             color: white;
             margin-top: 3rem;
             font-size: 0.875rem;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 40px rgba(76, 29, 149, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.12);
         }
 
         .disable-note strong {
@@ -120,46 +123,39 @@
 
         .attribution {
             text-align: center;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
             font-size: 0.875rem;
             margin-top: 2rem;
             padding: 1rem;
         }
 
         .attribution a {
-            color: rgba(255, 255, 255, 0.95);
+            color: #ffffff;
             text-decoration: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-            transition: border-color 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.2s;
         }
 
         .attribution a:hover {
             border-bottom-color: white;
+            color: #ff6b6b;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⛅ Sortland Weather</h1>
-        <p class="subtitle">Real-time weather from MET Norway</p>
-
-        <div class="info">
-            <p>Laravel Yr Package Demo</p>
-            <p><strong>Location:</strong> Sortland, Norway (67.6667°N, 15.4167°E)</p>
-        </div>
-
         <div class="weather-section">
             <x-yr-weather-card
-                :latitude="67.6667"
-                :longitude="15.4167"
+                :latitude="68.7044"
+                :longitude="15.4140"
                 location="Sortland, Norway"
             />
         </div>
 
         <div class="weather-section">
             <x-yr-forecast-card
-                :latitude="67.6667"
-                :longitude="15.4167"
+                :latitude="68.7044"
+                :longitude="15.4140"
                 location="Sortland"
                 :days="5"
             />

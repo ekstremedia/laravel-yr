@@ -9,11 +9,11 @@
                 @endif
 
                 <div class="weather-temp-container">
-                    <div class="weather-temp">
+                    <div class="weather-temp {{ ($weather['temperature'] ?? 0) > 0 ? 'temp-warm' : 'temp-cold' }}">
                         {{ $getTemperature() ?? 'N/A' }}
                     </div>
                     @if(($weather['feels_like'] ?? null) !== null && $weather['feels_like'] != $weather['temperature'])
-                        <div class="feels-like">
+                        <div class="feels-like {{ ($weather['feels_like'] ?? 0) > 0 ? 'temp-warm' : 'temp-cold' }}">
                             Feels like {{ round($weather['feels_like'], 1) }}°
                         </div>
                     @endif
@@ -83,12 +83,6 @@
                 <div class="weather-time">
                     Updated {{ \Carbon\Carbon::parse($weather['time'])->diffForHumans() }}
                 </div>
-                <div class="weather-attribution">
-                    <small>
-                        Weather data from <a href="https://www.met.no/" target="_blank" rel="noopener">The Norwegian Meteorological Institute (MET Norway)</a><br>
-                        Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>
-                    </small>
-                </div>
             </div>
         </div>
     @else
@@ -100,15 +94,16 @@
 
 <style>
     .yr-weather-card {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(46, 16, 101, 0.7);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border-radius: 28px;
+        border: 1px solid rgba(88, 28, 135, 0.6);
         padding: 2rem;
         color: white;
-        max-width: 500px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        box-shadow: 0 12px 40px rgba(46, 16, 101, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
 
     .weather-location {
@@ -116,7 +111,8 @@
         font-size: 1.75rem;
         font-weight: 700;
         text-align: center;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+        color: #ffffff;
     }
 
     .weather-main {
@@ -130,7 +126,7 @@
     .weather-icon {
         width: 96px;
         height: 96px;
-        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
     }
 
     .weather-temp-container {
@@ -144,13 +140,31 @@
         font-size: 4rem;
         font-weight: 700;
         line-height: 1;
-        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        text-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .weather-temp.temp-warm {
+        color: #ff6b6b;
+        text-shadow: 0 4px 16px rgba(255, 107, 107, 0.5);
+    }
+
+    .weather-temp.temp-cold {
+        color: #4dabf7;
+        text-shadow: 0 4px 16px rgba(77, 171, 247, 0.5);
     }
 
     .feels-like {
         font-size: 0.95rem;
-        opacity: 0.85;
         font-weight: 500;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .feels-like.temp-warm {
+        color: #ffa8a8;
+    }
+
+    .feels-like.temp-cold {
+        color: #74c0fc;
     }
 
     .weather-details {
@@ -165,22 +179,24 @@
         align-items: center;
         gap: 0.75rem;
         padding: 1rem;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(46, 16, 101, 0.5);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 14px;
+        border: 1px solid rgba(88, 28, 135, 0.6);
         transition: all 0.3s ease;
     }
 
     .weather-detail:hover {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(46, 16, 101, 0.7);
+        border-color: rgba(109, 40, 217, 0.8);
         transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(46, 16, 101, 0.5);
     }
 
     .detail-icon {
         flex-shrink: 0;
-        opacity: 0.9;
+        color: #ffffff;
     }
 
     .detail-content {
@@ -192,7 +208,7 @@
 
     .detail-label {
         font-size: 0.8rem;
-        opacity: 0.85;
+        color: rgba(255, 255, 255, 0.9);
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-weight: 600;
@@ -201,24 +217,25 @@
     .detail-value {
         font-size: 1.125rem;
         font-weight: 700;
+        color: #ffffff;
     }
 
     .weather-footer {
         margin-top: 1.5rem;
         padding-top: 1.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.25);
     }
 
     .weather-time {
         text-align: center;
         font-size: 0.875rem;
-        opacity: 0.85;
+        color: rgba(255, 255, 255, 0.9);
         margin-bottom: 0.75rem;
     }
 
     .weather-attribution {
         text-align: center;
-        opacity: 0.8;
+        color: rgba(255, 255, 255, 0.85);
     }
 
     .weather-attribution small {
@@ -239,7 +256,7 @@
     .weather-error {
         text-align: center;
         padding: 2rem;
-        opacity: 0.8;
+        color: rgba(255, 255, 255, 0.85);
     }
 
     @media (max-width: 640px) {
