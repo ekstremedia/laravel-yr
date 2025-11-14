@@ -3,6 +3,7 @@
 namespace YourVendor\LaravelYr;
 
 use Illuminate\Support\ServiceProvider;
+use YourVendor\LaravelYr\Services\GeocodingService;
 use YourVendor\LaravelYr\Services\YrWeatherService;
 use YourVendor\LaravelYr\View\Components\WeatherCard;
 
@@ -18,6 +19,12 @@ class YrServiceProvider extends ServiceProvider
             return new YrWeatherService(
                 config('yr.user_agent'),
                 config('yr.cache_ttl')
+            );
+        });
+
+        $this->app->singleton(GeocodingService::class, function ($app) {
+            return new GeocodingService(
+                config('yr.user_agent')
             );
         });
     }
