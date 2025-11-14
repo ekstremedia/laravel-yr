@@ -25,12 +25,18 @@ A production-ready Laravel package for integrating weather data from MET Norway 
 
 ### 3. RESTful API Endpoints
 - ✅ **WeatherController** - Production-ready API
-  - `GET /api/weather/current` - Current weather
-  - `GET /api/weather/forecast` - Full forecast
+  - `GET /api/weather/current` - Current weather (default, fully configurable)
+  - `GET /api/weather/forecast` - Full forecast (default, fully configurable)
   - Accepts **both addresses and coordinates**
   - Comprehensive validation (lat/lon ranges, altitude limits)
   - Proper error handling with meaningful messages
   - JSON responses with success/error states
+  - **Fully Configurable** - All aspects can be customized:
+    - Enable/disable entirely via `YR_API_ROUTES`
+    - Customize route prefix via `YR_API_ROUTE_PREFIX` (default: `api/weather`)
+    - Customize endpoint names via `YR_API_CURRENT_ENDPOINT` and `YR_API_FORECAST_ENDPOINT`
+  - Automatically registered by package (no manual route setup needed)
+  - Named routes: `yr.api.current` and `yr.api.forecast`
 
 **API Examples:**
 ```http
@@ -39,6 +45,15 @@ GET /api/weather/current?address=Oslo,Norway
 GET /api/weather/forecast?lat=59.9139&lon=10.7522&complete=1
 GET /api/weather/forecast?address=Bergen,Norway
 ```
+
+### 3.5. Weather Helper Service
+- ✅ **WeatherHelper** - Recommended way for developers to use the package
+  - Clean, non-HTTP interface for getting weather data
+  - Methods: `getWeatherByAddress()`, `getWeatherByCoordinates()`, `getForecastByAddress()`, `getForecastByCoordinates()`
+  - Same validation and error handling as API endpoints
+  - Returns structured arrays instead of JSON responses
+  - Perfect for server-side PHP code
+  - Automatically handles geocoding when using addresses
 
 ### 4. Frontend Components
 - ✅ **WeatherCard Blade Component**
@@ -75,16 +90,18 @@ GET /api/weather/forecast?address=Bergen,Norway
   - Can be disabled via `YR_DEMO_ROUTE=false`
 
 ### 5. Testing & CI/CD
-- ✅ **Pest Test Suite** (41 tests, all passing, 143 assertions)
+- ✅ **Pest Test Suite** (65 tests, all passing, 181 assertions)
   - Unit tests for YrWeatherService (symbol URLs, calculations, coordinate truncation)
   - Unit tests for GeocodingService (instantiation, user agent, coordinate truncation)
+  - Unit tests for WeatherHelper (validation, error handling, address/coordinate methods)
   - Feature tests for WeatherController (validation, endpoints)
+  - Feature tests for API Routes (configurability, named routes, custom prefixes/endpoints)
   - Feature tests for Blade components (rendering, namespace consistency)
   - Feature tests for Demo route (location search, coordinates, error handling)
   - Feature tests for Attribution (licensing compliance)
   - Feature tests for Namespace consistency (no old references)
   - No external API dependencies in tests
-  - Fast execution (~3.9s)
+  - Fast execution (~9.1s)
 
 - ✅ **GitHub Actions Workflow**
   - Automated testing on push/PR
@@ -239,12 +256,30 @@ composer format
 ```
 
 **Current Test Results:**
-- ✅ 41 tests passing
-- ✅ 143 assertions
+- ✅ 65 tests passing
+- ✅ 181 assertions
 - ✅ 0 failures
 - ✅ Pint: All files passing
 
 ## 🎨 Usage Examples
+
+### Weather Helper (Recommended)
+```php
+use Ekstremedia\LaravelYr\Services\WeatherHelper;
+
+$helper = app(WeatherHelper::class);
+
+// Get current weather by address
+$result = $helper->getWeatherByAddress('Oslo, Norway');
+// Returns: ['current' => [...], 'location' => [...]]
+
+// Get current weather by coordinates
+$result = $helper->getWeatherByCoordinates(59.9139, 10.7522, altitude: 90);
+
+// Get forecast
+$forecast = $helper->getForecastByAddress('Bergen, Norway');
+$forecast = $helper->getForecastByCoordinates(60.39, 5.32, complete: true);
+```
 
 ### Blade Components
 
@@ -267,7 +302,7 @@ composer format
 />
 ```
 
-### PHP Service
+### Direct Service Usage
 ```php
 use Ekstremedia\LaravelYr\Services\YrWeatherService;
 use Ekstremedia\LaravelYr\Services\GeocodingService;
@@ -344,7 +379,8 @@ While the package is production-ready, these optional enhancements could be adde
 ---
 
 **Package Status:** ✅ Production Ready
-**Test Status:** ✅ All Passing (41/41, 143 assertions)
+**Test Status:** ✅ All Passing (65/65, 181 assertions)
 **Code Style:** ✅ Pint Passing
 **CI/CD:** ✅ GitHub Actions Configured
 **Demo:** ✅ Interactive Demo at /yr
+**API Routes:** ✅ Fully Configurable (prefix, endpoints, enable/disable)

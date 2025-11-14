@@ -41,7 +41,17 @@ composer install
 ## Architecture
 
 ### Service Layer
-The package uses two main services that handle external API communication:
+The package uses three main services:
+
+**WeatherHelper** (`src/Services/WeatherHelper.php`) - **Recommended for developers**
+- High-level service that provides clean API for getting weather data
+- Methods: `getWeatherByAddress()`, `getWeatherByCoordinates()`, `getForecastByAddress()`, `getForecastByCoordinates()`
+- Handles all validation (lat/lon ranges, altitude limits, address format)
+- Automatically uses GeocodingService for address lookups
+- Returns structured arrays: `['current' => [...], 'location' => [...]]`
+- Throws `InvalidArgumentException` for validation errors
+- Returns `null` if weather service or geocoding fails
+- **This is the recommended way to use the package in PHP code**
 
 **YrWeatherService** (`src/Services/YrWeatherService.php`)
 - Core service for MET Norway API integration
@@ -49,7 +59,7 @@ The package uses two main services that handle external API communication:
 - Implements intelligent caching with `Expires` header and `If-Modified-Since` support
 - Truncates coordinates to 4 decimals (MET API requirement)
 - Supports both `/compact` (default) and `/complete` endpoints
-- Provides methods: `getForecast()`, `getCurrentWeather()`, `getDailyForecast()`
+- Provides methods: `getForecast()`, `getCurrentWeather()`
 - Calculates "feels-like" temperature using wind chill and heat index formulas
 
 **GeocodingService** (`src/Services/GeocodingService.php`)
@@ -59,9 +69,9 @@ The package uses two main services that handle external API communication:
 - 7-day caching for geocoding results
 - Truncates coordinates to 4 decimals before returning
 
-Both services are registered as singletons in `YrServiceProvider.php` and injected via constructor with config values.
+All services are registered as singletons in `YrServiceProvider.php` and injected via constructor with config values.
 
-### Controller Layer
+### Controller Layer & API Routes
 **WeatherController** (`src/Http/Controllers/WeatherController.php`)
 - Two endpoints: `current()` and `forecast()`
 - Accepts either coordinates (`lat`/`lon`) OR address
@@ -69,6 +79,18 @@ Both services are registered as singletons in `YrServiceProvider.php` and inject
 - Optional `altitude` parameter (validated -500 to 9000m)
 - Returns JSON with `success` and `data` structure
 - Comprehensive validation for lat/lon ranges
+
+**API Routes** (`routes/api.php`)
+- Automatically registered by package (no manual setup needed)
+- Routes: `/api/weather/current` and `/api/weather/forecast` (defaults, fully configurable)
+- Named routes: `yr.api.current` and `yr.api.forecast`
+- **Fully Configurable**:
+  - Enable/disable: `YR_API_ROUTES=false`
+  - Custom prefix: `YR_API_ROUTE_PREFIX=weather` (changes `/api/weather/*` to `/weather/*`)
+  - Custom endpoints: `YR_API_CURRENT_ENDPOINT=now` and `YR_API_FORECAST_ENDPOINT=predictions`
+  - Example: With `YR_API_ROUTE_PREFIX=api/yr`, `YR_API_CURRENT_ENDPOINT=now`, routes become `/api/yr/now`
+- Loaded conditionally in `YrServiceProvider::boot()`
+- Routes use config values, so changes require cache clearing in production
 
 ### View Layer
 **Blade Components:**
@@ -92,13 +114,29 @@ Both components:
 **Config file:** `config/yr.php`
 - `user_agent` - Required by MET Norway (must include contact info)
 - `cache_ttl` - Default cache duration (default: 3600s)
-- `enable_demo_route` - Toggle demo page on/off
+- `enable_demo_route` - Toggle demo page on/off (default: true)
+- `enable_api_routes` - Toggle API routes on/off (default: true)
+- `api_route_prefix` - Route prefix for API endpoints (default: `api/weather`)
+- `api_current_endpoint` - Endpoint name for current weather (default: `current`)
+- `api_forecast_endpoint` - Endpoint name for forecast (default: `forecast`)
 
 **Environment variables:**
 ```env
 YR_USER_AGENT="YourApp/1.0 (your.email@example.com)"
 YR_CACHE_TTL=3600
 YR_DEMO_ROUTE=true
+YR_API_ROUTES=true
+YR_API_ROUTE_PREFIX=api/weather
+YR_API_CURRENT_ENDPOINT=current
+YR_API_FORECAST_ENDPOINT=forecast
+```
+
+**Example custom configuration:**
+```env
+# Use /weather/now instead of /api/weather/current
+YR_API_ROUTE_PREFIX=weather
+YR_API_CURRENT_ENDPOINT=now
+YR_API_FORECAST_ENDPOINT=predictions
 ```
 
 ### Service Provider
@@ -110,16 +148,18 @@ YR_DEMO_ROUTE=true
 
 ## Testing Strategy
 
-**Test Suite:** Pest PHP (41 tests, 143 assertions)
+**Test Suite:** Pest PHP (59 tests, 175 assertions)
 
 Tests are organized into:
 - `tests/Unit/` - Service unit tests (no external API calls)
-- `tests/Feature/` - HTTP endpoint tests, Blade component rendering
+- `tests/Feature/` - HTTP endpoint tests, Blade component rendering, route configuration
 
 **Key Test Files:**
 - `YrWeatherServiceTest.php` - Symbol URLs, calculations, coordinate truncation
 - `GeocodingServiceTest.php` - Instantiation, user agent, coordinate truncation
+- `WeatherHelperTest.php` - Validation for all methods, error handling, address/coordinate inputs
 - `WeatherControllerTest.php` - Validation, endpoints, error handling
+- `ApiRoutesConfigTest.php` - Tests that API routes can be enabled/disabled via config
 - `BladeComponentRenderingTest.php` - Component rendering, namespace checks
 - `DemoRouteTest.php` - Location search, coordinates, form preservation, error handling
 - `NamespaceConsistencyTest.php` - Ensures no old namespace references (important for package integrity)
@@ -164,6 +204,43 @@ Weather symbols are SVG files licensed under MIT from Yr.no. The package can:
 Local symbols path: `public/vendor/laravel-yr/symbols/`
 
 The `YrWeatherService::getSymbolUrl()` method checks if local symbols exist before falling back to remote URLs.
+
+## Recommended Usage Pattern
+
+**For developers writing PHP code**, use `WeatherHelper`:
+```php
+use Ekstremedia\LaravelYr\Services\WeatherHelper;
+
+$helper = app(WeatherHelper::class);
+
+// By address
+$result = $helper->getWeatherByAddress('Oslo, Norway');
+if ($result) {
+    $temperature = $result['current']['temperature'];
+    $location = $result['location']['name'];
+}
+
+// By coordinates
+$result = $helper->getWeatherByCoordinates(59.9139, 10.7522, altitude: 90);
+if ($result) {
+    // Handle weather data
+}
+
+// Forecast
+$forecast = $helper->getForecastByAddress('Bergen, Norway');
+```
+
+**For JavaScript/API consumers**, use the API routes:
+```javascript
+const response = await fetch('/api/weather/current?address=Oslo,Norway');
+const { data } = await response.json();
+console.log(data.current.temperature);
+```
+
+**For Blade templates**, use components:
+```blade
+<x-yr-weather-card :latitude="59.9139" :longitude="10.7522" location="Oslo" />
+```
 
 ## Common Pitfalls
 

@@ -95,16 +95,55 @@ GET /api/weather/forecast?lat=59.9139&lon=10.7522
 
 ## Usage
 
-### In your routes
+### Using the Weather Helper (Recommended)
+
+The easiest way to use this package is through the `WeatherHelper` service:
 
 ```php
-use Ekstremedia\LaravelYr\Http\Controllers\WeatherController;
+use Ekstremedia\LaravelYr\Services\WeatherHelper;
 
-Route::get('weather/current', [WeatherController::class, 'current']);
-Route::get('weather/forecast', [WeatherController::class, 'forecast']);
+$helper = app(WeatherHelper::class);
+
+// Get current weather by address
+$result = $helper->getWeatherByAddress('Oslo, Norway');
+// Returns: ['current' => [...], 'location' => [...]]
+
+// Get current weather by coordinates
+$result = $helper->getWeatherByCoordinates(59.9139, 10.7522, altitude: 90);
+
+// Get forecast
+$forecast = $helper->getForecastByAddress('Bergen, Norway');
+$forecast = $helper->getForecastByCoordinates(60.39, 5.32, complete: true);
 ```
 
-### In your code
+### Using API Routes
+
+The package automatically registers API routes (fully configurable):
+
+```
+GET /api/weather/current?lat=59.9139&lon=10.7522
+GET /api/weather/current?address=Oslo,Norway
+GET /api/weather/forecast?lat=59.9139&lon=10.7522
+```
+
+**Customize API routes** in your `.env`:
+```env
+# Disable API routes entirely
+YR_API_ROUTES=false
+
+# Customize route prefix (default: api/weather)
+YR_API_ROUTE_PREFIX=weather
+
+# Customize endpoint names
+YR_API_CURRENT_ENDPOINT=now
+YR_API_FORECAST_ENDPOINT=predictions
+```
+
+With the above config, routes become:
+- `/weather/now` (current weather)
+- `/weather/predictions` (forecast)
+
+### Using Services Directly
 
 ```php
 use Ekstremedia\LaravelYr\Services\YrWeatherService;
@@ -158,12 +197,28 @@ Each weather response includes:
 
 ## Configuration
 
-The config file (`config/yr.php`) has two settings:
+The config file (`config/yr.php`) has these settings:
 
 ```php
 return [
+    // Required: User agent for MET Norway API
     'user_agent' => env('YR_USER_AGENT', 'YourApp/1.0 (contact@example.com)'),
-    'cache_ttl' => env('YR_CACHE_TTL', 3600), // seconds
+
+    // Cache duration in seconds
+    'cache_ttl' => env('YR_CACHE_TTL', 3600),
+
+    // Enable/disable demo page at /yr
+    'enable_demo_route' => env('YR_DEMO_ROUTE', true),
+
+    // Enable/disable API routes
+    'enable_api_routes' => env('YR_API_ROUTES', true),
+
+    // Customize API route prefix (default: 'api/weather')
+    'api_route_prefix' => env('YR_API_ROUTE_PREFIX', 'api/weather'),
+
+    // Customize endpoint names
+    'api_current_endpoint' => env('YR_API_CURRENT_ENDPOINT', 'current'),
+    'api_forecast_endpoint' => env('YR_API_FORECAST_ENDPOINT', 'forecast'),
 ];
 ```
 

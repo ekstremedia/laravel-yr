@@ -37,4 +37,51 @@ return [
     |
     */
     'enable_demo_route' => env('YR_DEMO_ROUTE', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable API Routes
+    |--------------------------------------------------------------------------
+    |
+    | Enable the API routes for weather data.
+    | Set to true to enable, false to disable.
+    |
+    */
+    'enable_api_routes' => env('YR_API_ROUTES', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Route Prefix
+    |--------------------------------------------------------------------------
+    |
+    | The prefix for the API routes. Default is 'api/weather' which creates
+    | routes like /api/weather/current and /api/weather/forecast.
+    |
+    | Example: 'weather' would create /weather/current and /weather/forecast
+    | Example: 'api/yr' would create /api/yr/current and /api/yr/forecast
+    |
+    */
+    'api_route_prefix' => env('YR_API_ROUTE_PREFIX', 'api/weather'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Current Weather Endpoint
+    |--------------------------------------------------------------------------
+    |
+    | The endpoint name for current weather data.
+    | Default: 'current' (creates /api/weather/current)
+    |
+    */
+    'api_current_endpoint' => env('YR_API_CURRENT_ENDPOINT', 'current'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Forecast Endpoint
+    |--------------------------------------------------------------------------
+    |
+    | The endpoint name for forecast data.
+    | Default: 'forecast' (creates /api/weather/forecast)
+    |
+    */
+    'api_forecast_endpoint' => env('YR_API_FORECAST_ENDPOINT', 'forecast'),
 ];

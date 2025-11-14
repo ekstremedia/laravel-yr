@@ -1,11 +1,8 @@
 <?php
 
-use Ekstremedia\LaravelYr\Http\Controllers\WeatherController;
-use Illuminate\Support\Facades\Route;
-
 beforeEach(function () {
-    Route::get('/api/weather/current', [WeatherController::class, 'current']);
-    Route::get('/api/weather/forecast', [WeatherController::class, 'forecast']);
+    // API routes are now automatically registered by the service provider
+    config(['yr.enable_api_routes' => true]);
 });
 
 it('returns error for missing location parameters', function () {

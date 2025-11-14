@@ -3,6 +3,7 @@
 namespace Ekstremedia\LaravelYr;
 
 use Ekstremedia\LaravelYr\Services\GeocodingService;
+use Ekstremedia\LaravelYr\Services\WeatherHelper;
 use Ekstremedia\LaravelYr\Services\YrWeatherService;
 use Ekstremedia\LaravelYr\View\Components\ForecastCard;
 use Ekstremedia\LaravelYr\View\Components\WeatherCard;
@@ -26,6 +27,13 @@ class YrServiceProvider extends ServiceProvider
         $this->app->singleton(GeocodingService::class, function ($app) {
             return new GeocodingService(
                 config('yr.user_agent')
+            );
+        });
+
+        $this->app->singleton(WeatherHelper::class, function ($app) {
+            return new WeatherHelper(
+                $app->make(YrWeatherService::class),
+                $app->make(GeocodingService::class)
             );
         });
     }
@@ -52,6 +60,11 @@ class YrServiceProvider extends ServiceProvider
             WeatherCard::class,
             ForecastCard::class,
         ]);
+
+        // Register API routes if enabled
+        if (config('yr.enable_api_routes', true)) {
+            $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+        }
 
         // Register demo route if enabled
         if (config('yr.enable_demo_route', true)) {

@@ -52,18 +52,46 @@ Tests that verify:
 - ✅ Demo route preserves location search input after submission
 - ✅ Demo route preserves coordinate inputs after submission
 
+### 4. **ApiRoutesConfigTest.php**
+Tests that verify:
+- ✅ API routes are enabled by default
+- ✅ API routes can be disabled via config
+- ✅ API current endpoint is accessible when enabled
+- ✅ API forecast endpoint is accessible when enabled
+- ✅ API routes have named routes
+- ✅ Has default API route prefix config (`api/weather`)
+- ✅ Has default API current endpoint config (`current`)
+- ✅ Has default API forecast endpoint config (`forecast`)
+- ✅ API route prefix config can be customized
+- ✅ API current endpoint config can be customized
+- ✅ API forecast endpoint config can be customized
+
+### 5. **WeatherHelperTest.php**
+Tests that verify:
+- ✅ WeatherHelper can be instantiated
+- ✅ Validates latitude range (above and below limits)
+- ✅ Validates longitude range (above and below limits)
+- ✅ Validates altitude range (above and below limits)
+- ✅ Validates address minimum length
+- ✅ Validates address cannot be empty or whitespace
+- ✅ Validates address maximum length
+- ✅ Accepts valid coordinates without throwing exceptions
+- ✅ Accepts valid addresses without throwing exceptions
+
 ## Test Coverage
 
-Total: **41 tests** with **143 assertions**
+Total: **65 tests** with **181 assertions**
 
 ### Breakdown:
 - **Namespace Consistency**: 7 tests
 - **Blade Component Rendering**: 5 tests
 - **Component Attribution**: 2 tests
 - **Demo Route Functionality**: 9 tests
+- **API Routes Configuration**: 11 tests (including custom prefix/endpoint tests)
 - **Weather Controller API**: 8 tests
 - **Geocoding Service**: 3 tests
 - **Weather Service**: 7 tests
+- **Weather Helper Service**: 13 tests
 
 ## Running Tests
 
