@@ -97,26 +97,26 @@
 
         .disable-note {
             background: linear-gradient(135deg,
-                        rgba(88, 86, 214, 0.35),
-                        rgba(175, 108, 233, 0.3));
+                        rgba(30, 27, 75, 0.7),
+                        rgba(45, 27, 78, 0.65));
             backdrop-filter: blur(30px) saturate(150%);
             -webkit-backdrop-filter: blur(30px) saturate(150%);
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             padding: 1.5rem;
             color: white;
             margin-top: 3rem;
             font-size: 0.875rem;
             text-align: center;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1),
-                        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2),
+                        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
             transition: all 0.3s ease;
         }
 
         .disable-note:hover {
             transform: translateY(-2px);
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15),
-                        0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25),
+                        0 0 0 1px rgba(255, 255, 255, 0.12) inset;
         }
 
         .disable-note strong {

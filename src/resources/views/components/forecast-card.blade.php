@@ -139,16 +139,16 @@
 <style>
     .yr-forecast-card-purple {
         background: linear-gradient(135deg,
-                    rgba(88, 86, 214, 0.42),
-                    rgba(175, 108, 233, 0.38));
+                    rgba(30, 27, 75, 0.85),
+                    rgba(45, 27, 78, 0.8));
         backdrop-filter: blur(40px) saturate(150%);
         -webkit-backdrop-filter: blur(40px) saturate(150%);
         border-radius: 32px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         padding: 2.5rem;
         color: white;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15),
-                    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
         width: 100%;
         position: relative;
         overflow: hidden;
@@ -172,9 +172,6 @@
         margin-bottom: 2.5rem;
         padding-bottom: 2rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        background: linear-gradient(180deg,
-                    rgba(255, 255, 255, 0.02),
-                    transparent);
     }
 
     .forecast-title-purple {
@@ -206,22 +203,22 @@
 
     .day-row {
         background: linear-gradient(135deg,
-                    rgba(255, 255, 255, 0.06),
-                    rgba(255, 255, 255, 0.02));
+                    rgba(255, 255, 255, 0.04),
+                    rgba(255, 255, 255, 0.01));
         border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         overflow: hidden;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         backdrop-filter: blur(10px);
     }
 
     .day-row:hover {
-        border-color: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.18);
         background: linear-gradient(135deg,
-                    rgba(255, 255, 255, 0.08),
-                    rgba(255, 255, 255, 0.03));
+                    rgba(255, 255, 255, 0.06),
+                    rgba(255, 255, 255, 0.02));
         transform: translateY(-2px);
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
     }
 
     .day-summary {

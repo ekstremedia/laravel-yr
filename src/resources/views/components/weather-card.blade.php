@@ -95,17 +95,17 @@
 <style>
     .yr-weather-card {
         background: linear-gradient(135deg,
-                    rgba(88, 86, 214, 0.42),
-                    rgba(175, 108, 233, 0.38));
+                    rgba(30, 27, 75, 0.85),
+                    rgba(45, 27, 78, 0.8));
         backdrop-filter: blur(40px) saturate(150%);
         -webkit-backdrop-filter: blur(40px) saturate(150%);
         border-radius: 32px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         padding: 2.5rem;
         color: white;
         width: 100%;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15),
-                    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
         position: relative;
         overflow: hidden;
     }
@@ -217,21 +217,21 @@
         gap: 0.875rem;
         padding: 1.125rem;
         background: linear-gradient(135deg,
-                    rgba(255, 255, 255, 0.08),
-                    rgba(255, 255, 255, 0.03));
+                    rgba(255, 255, 255, 0.05),
+                    rgba(255, 255, 255, 0.02));
         border-radius: 18px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         backdrop-filter: blur(10px);
     }
 
     .weather-detail:hover {
         background: linear-gradient(135deg,
-                    rgba(255, 255, 255, 0.12),
-                    rgba(255, 255, 255, 0.06));
-        border-color: rgba(255, 255, 255, 0.2);
+                    rgba(255, 255, 255, 0.08),
+                    rgba(255, 255, 255, 0.04));
+        border-color: rgba(255, 255, 255, 0.15);
         transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     }
 
     .detail-icon {
@@ -272,9 +272,6 @@
         margin-top: 2rem;
         padding-top: 1.75rem;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
-        background: linear-gradient(180deg,
-                    transparent,
-                    rgba(255, 255, 255, 0.02));
     }
 
     .weather-time {
