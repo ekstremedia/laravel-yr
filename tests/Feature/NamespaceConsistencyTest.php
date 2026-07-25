@@ -1,5 +1,7 @@
 <?php
 
+use Ekstremedia\LaravelYr\Services\GeocodingService;
+use Ekstremedia\LaravelYr\Services\YrWeatherService;
 use Illuminate\Support\Facades\File;
 
 it('has no references to old YourVendor namespace in PHP files', function () {
@@ -83,9 +85,9 @@ it('service provider is registered with correct namespace', function () {
 });
 
 it('services are bound with correct namespace', function () {
-    $weatherService = app(\Ekstremedia\LaravelYr\Services\YrWeatherService::class);
-    $geocodingService = app(\Ekstremedia\LaravelYr\Services\GeocodingService::class);
+    $weatherService = app(YrWeatherService::class);
+    $geocodingService = app(GeocodingService::class);
 
-    expect($weatherService)->toBeInstanceOf(\Ekstremedia\LaravelYr\Services\YrWeatherService::class);
-    expect($geocodingService)->toBeInstanceOf(\Ekstremedia\LaravelYr\Services\GeocodingService::class);
+    expect($weatherService)->toBeInstanceOf(YrWeatherService::class);
+    expect($geocodingService)->toBeInstanceOf(GeocodingService::class);
 });

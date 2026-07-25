@@ -1,10 +1,39 @@
 <?php
 
 use Ekstremedia\LaravelYr\Services\YrWeatherService;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 
 beforeEach(function () {
     $this->service = app(YrWeatherService::class);
 });
+
+/**
+ * A mocked-client YrWeatherService, for tests that need getForecast() to
+ * actually return data without depending on the real MET API (which
+ * routinely 403s automated/CI traffic).
+ */
+function fakeYrService(): YrWeatherService
+{
+    $body = json_encode([
+        'properties' => [
+            'meta' => ['updated_at' => '2026-01-01T00:00:00Z', 'units' => []],
+            'timeseries' => [[
+                'time' => '2026-01-01T00:00:00Z',
+                'data' => [
+                    'instant' => ['details' => ['air_temperature' => 5.0, 'wind_speed' => 2.0, 'relative_humidity' => 80.0]],
+                    'next_1_hours' => ['summary' => ['symbol_code' => 'clearsky_day'], 'details' => ['precipitation_amount' => 0.0]],
+                ],
+            ]],
+        ],
+    ]);
+
+    $client = new Client(['handler' => HandlerStack::create(new MockHandler([new Response(200, [], $body)]))]);
+
+    return new YrWeatherService('test-agent', 3600, $client);
+}
 
 it('generates correct weather symbol URL', function () {
     $url = $this->service->getSymbolUrl('clearsky_day');
@@ -61,8 +90,9 @@ it('returns same temperature when no adjustment needed', function () {
 });
 
 it('truncates coordinates to max 4 decimals per MET API TOS', function () {
-    // Test with high precision coordinates
-    $forecast = $this->service->getForecast(59.913868217, 10.752245396);
+    // Test with high precision coordinates, against a mocked client so this
+    // doesn't depend on the real (rate-limiting) MET API.
+    $forecast = fakeYrService()->getForecast(59.913868217, 10.752245396);
 
     // If successful, the service should have truncated to 4 decimals
     // We can't directly test the truncation but we verify it doesn't throw errors

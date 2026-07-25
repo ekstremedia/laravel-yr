@@ -1,5 +1,7 @@
 <?php
 
+use Ekstremedia\LaravelYr\View\Components\ForecastCard;
+use Ekstremedia\LaravelYr\View\Components\WeatherCard;
 use Illuminate\Support\Facades\Blade;
 
 it('weather card blade component renders via Blade syntax', function () {
@@ -53,25 +55,25 @@ it('demo view renders without errors', function () {
 });
 
 it('weather card component can be instantiated with correct namespace', function () {
-    $component = new \Ekstremedia\LaravelYr\View\Components\WeatherCard(
+    $component = new WeatherCard(
         latitude: 59.9139,
         longitude: 10.7522,
         location: 'Oslo'
     );
 
-    expect($component)->toBeInstanceOf(\Ekstremedia\LaravelYr\View\Components\WeatherCard::class);
+    expect($component)->toBeInstanceOf(WeatherCard::class);
     expect($component->location)->toBe('Oslo');
 });
 
 it('forecast card component can be instantiated with correct namespace', function () {
-    $component = new \Ekstremedia\LaravelYr\View\Components\ForecastCard(
+    $component = new ForecastCard(
         latitude: 59.9139,
         longitude: 10.7522,
         location: 'Oslo',
         days: 5
     );
 
-    expect($component)->toBeInstanceOf(\Ekstremedia\LaravelYr\View\Components\ForecastCard::class);
+    expect($component)->toBeInstanceOf(ForecastCard::class);
     expect($component->location)->toBe('Oslo');
     expect($component->days)->toBe(5);
 });

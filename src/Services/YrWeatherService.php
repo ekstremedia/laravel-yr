@@ -4,12 +4,13 @@ namespace Ekstremedia\LaravelYr\Services;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Cache;
 
 class YrWeatherService
 {
-    private Client $client;
+    private ClientInterface $client;
 
     private string $userAgent;
 
@@ -17,11 +18,16 @@ class YrWeatherService
 
     private const API_BASE_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/';
 
-    public function __construct(string $userAgent, int $cacheTtl = 3600)
+    /**
+     * @param  ClientInterface|null  $client  Inject a client (e.g. Guzzle MockHandler-backed) for
+     *                                        testing without hitting the real MET API. Defaults to
+     *                                        a real Guzzle client for normal application use.
+     */
+    public function __construct(string $userAgent, int $cacheTtl = 3600, ?ClientInterface $client = null)
     {
         $this->userAgent = $userAgent;
         $this->cacheTtl = $cacheTtl;
-        $this->client = new Client([
+        $this->client = $client ?? new Client([
             'base_uri' => self::API_BASE_URL,
             'headers' => [
                 'User-Agent' => $this->userAgent,

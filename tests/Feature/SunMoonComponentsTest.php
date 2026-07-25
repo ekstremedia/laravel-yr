@@ -1,13 +1,16 @@
 <?php
 
+use Ekstremedia\LaravelYr\View\Components\MoonCard;
+use Ekstremedia\LaravelYr\View\Components\SunriseCard;
+
 it('sunrise card component can be instantiated', function () {
-    $component = new \Ekstremedia\LaravelYr\View\Components\SunriseCard(
+    $component = new SunriseCard(
         latitude: 59.9139,
         longitude: 10.7522,
         location: 'Oslo, Norway'
     );
 
-    expect($component)->toBeInstanceOf(\Ekstremedia\LaravelYr\View\Components\SunriseCard::class);
+    expect($component)->toBeInstanceOf(SunriseCard::class);
     expect($component->latitude)->toBe(59.9139);
     expect($component->longitude)->toBe(10.7522);
     expect($component->location)->toBe('Oslo, Norway');
@@ -33,13 +36,13 @@ it('sunrise card component includes attribution', function () {
 });
 
 it('moon card component can be instantiated', function () {
-    $component = new \Ekstremedia\LaravelYr\View\Components\MoonCard(
+    $component = new MoonCard(
         latitude: 59.9139,
         longitude: 10.7522,
         location: 'Oslo, Norway'
     );
 
-    expect($component)->toBeInstanceOf(\Ekstremedia\LaravelYr\View\Components\MoonCard::class);
+    expect($component)->toBeInstanceOf(MoonCard::class);
     expect($component->latitude)->toBe(59.9139);
     expect($component->longitude)->toBe(10.7522);
     expect($component->location)->toBe('Oslo, Norway');
@@ -65,7 +68,7 @@ it('moon card component includes attribution', function () {
 });
 
 it('sunrise card accepts date parameter', function () {
-    $component = new \Ekstremedia\LaravelYr\View\Components\SunriseCard(
+    $component = new SunriseCard(
         latitude: 59.9139,
         longitude: 10.7522,
         location: 'Oslo',
@@ -76,7 +79,7 @@ it('sunrise card accepts date parameter', function () {
 });
 
 it('moon card accepts date parameter', function () {
-    $component = new \Ekstremedia\LaravelYr\View\Components\MoonCard(
+    $component = new MoonCard(
         latitude: 59.9139,
         longitude: 10.7522,
         location: 'Oslo',

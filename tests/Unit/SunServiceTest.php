@@ -48,7 +48,7 @@ it('accepts valid date parameter', function () {
     try {
         $data = $this->service->getSunData(60.0, 10.0, '2025-12-25');
         expect(true)->toBeTrue();
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         // Network errors are okay for this test
         if (! str_contains($e->getMessage(), 'HTTP') && ! str_contains($e->getMessage(), 'timeout')) {
             throw $e;
@@ -62,7 +62,7 @@ it('accepts timezone offset parameter', function () {
     try {
         $data = $this->service->getSunData(60.0, 10.0, null, 2);
         expect(true)->toBeTrue();
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         // Network errors are okay for this test
         if (! str_contains($e->getMessage(), 'HTTP') && ! str_contains($e->getMessage(), 'timeout')) {
             throw $e;

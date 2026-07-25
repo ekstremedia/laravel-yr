@@ -1,5 +1,41 @@
 <?php
 
+use Ekstremedia\LaravelYr\Services\YrWeatherService;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Cache;
+
+/**
+ * Bind a YrWeatherService backed by a mocked Guzzle client so these tests
+ * exercise the route/controller wiring without depending on the real,
+ * rate-limiting MET API (which routinely 403s automated/CI traffic - this
+ * was flaky in CI before the mock was added).
+ */
+function fakeYrWeatherService(): void
+{
+    Cache::flush(); // avoid a cached forecast from a previous test masking the fake
+
+    $body = json_encode([
+        'properties' => [
+            'meta' => ['updated_at' => '2026-01-01T00:00:00Z', 'units' => []],
+            'timeseries' => [[
+                'time' => '2026-01-01T00:00:00Z',
+                'data' => [
+                    'instant' => ['details' => ['air_temperature' => 5.0, 'wind_speed' => 2.0, 'relative_humidity' => 80.0]],
+                    'next_1_hours' => ['summary' => ['symbol_code' => 'clearsky_day'], 'details' => ['precipitation_amount' => 0.0]],
+                ],
+            ]],
+        ],
+    ]);
+
+    $mock = new MockHandler([new Response(200, [], $body), new Response(200, [], $body)]);
+    $client = new Client(['handler' => HandlerStack::create($mock)]);
+
+    app()->instance(YrWeatherService::class, new YrWeatherService('test-agent', 3600, $client));
+}
+
 it('api routes are enabled by default', function () {
     config(['yr.enable_api_routes' => true]);
 
@@ -23,6 +59,7 @@ it('api routes can be disabled via config', function () {
 
 it('api current endpoint is accessible when enabled', function () {
     config(['yr.enable_api_routes' => true]);
+    fakeYrWeatherService();
 
     $response = $this->get('/api/weather/current?lat=59.9139&lon=10.7522');
 
@@ -38,6 +75,7 @@ it('api current endpoint is accessible when enabled', function () {
 
 it('api forecast endpoint is accessible when enabled', function () {
     config(['yr.enable_api_routes' => true]);
+    fakeYrWeatherService();
 
     $response = $this->get('/api/weather/forecast?lat=59.9139&lon=10.7522');
 
