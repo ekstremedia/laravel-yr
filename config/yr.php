@@ -29,6 +29,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Nowcast Cache TTL
+    |--------------------------------------------------------------------------
+    |
+    | The time-to-live for cached MET Nowcast 2.0 data in seconds, used by
+    | getNowcast(). Nowcast updates every few minutes, so this is intentionally
+    | much shorter than 'cache_ttl' above.
+    | Default: 300 seconds (5 minutes)
+    |
+    */
+    'nowcast_cache_ttl' => env('YR_NOWCAST_CACHE_TTL', 300),
+
+    /*
+    |--------------------------------------------------------------------------
     | Enable Demo Route
     |--------------------------------------------------------------------------
     |

@@ -16,17 +16,25 @@ class YrWeatherService
 
     private int $cacheTtl;
 
+    private int $nowcastCacheTtl;
+
     private const API_BASE_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/';
+
+    private const NOWCAST_API_URL = 'https://api.met.no/weatherapi/nowcast/2.0/complete';
 
     /**
      * @param  ClientInterface|null  $client  Inject a client (e.g. Guzzle MockHandler-backed) for
      *                                        testing without hitting the real MET API. Defaults to
      *                                        a real Guzzle client for normal application use.
+     * @param  int  $nowcastCacheTtl  Cache TTL in seconds for getNowcast(). MET Nowcast 2.0 updates
+     *                                every few minutes, so this is intentionally much shorter than
+     *                                the locationforecast $cacheTtl.
      */
-    public function __construct(string $userAgent, int $cacheTtl = 3600, ?ClientInterface $client = null)
+    public function __construct(string $userAgent, int $cacheTtl = 3600, ?ClientInterface $client = null, int $nowcastCacheTtl = 300)
     {
         $this->userAgent = $userAgent;
         $this->cacheTtl = $cacheTtl;
+        $this->nowcastCacheTtl = $nowcastCacheTtl;
         $this->client = $client ?? new Client([
             'base_uri' => self::API_BASE_URL,
             'headers' => [
@@ -91,7 +99,12 @@ class YrWeatherService
                 $expiresHeader = $response->getHeader('Expires')[0] ?? null;
                 if ($expiresHeader) {
                     $expiresAt = Carbon::parse($expiresHeader);
-                    $ttl = max(60, $expiresAt->diffInSeconds(now())); // Minimum 60 seconds
+                    // now()->diffInSeconds($expiresAt): seconds remaining until Expires. Carbon 3's
+                    // diffInSeconds() is signed (unlike Carbon 2's absolute default), so the operand
+                    // order matters here: now()->diffInSeconds($expiresAt) is positive while Expires
+                    // is still in the future, and goes negative once it has passed - max(60, ...)
+                    // then floors that at 60 seconds either way.
+                    $ttl = max(60, now()->diffInSeconds($expiresAt)); // Minimum 60 seconds
                     Cache::put($cacheKey, $this->formatWeatherData($data), $ttl);
                 }
 
@@ -116,6 +129,97 @@ class YrWeatherService
         }
 
         return $forecast['timeseries'][0] ?? null;
+    }
+
+    /**
+     * Get a MET Nowcast 2.0 short-range precipitation forecast, used for the "next couple of
+     * hours" radar-style nowcast box. Coverage is the Nordic countries only (Norway, Sweden,
+     * Finland, Denmark); MET responds with a 422 "Outsidegeographicarea" error outside that
+     * area. This never throws - any HTTP/decode failure, and any out-of-coverage response,
+     * results in null so a caller can fall back to the regular forecast without a try/catch.
+     */
+    public function getNowcast(float $latitude, float $longitude): ?array
+    {
+        // Truncate coordinates to max 4 decimals per MET API TOS
+        $latitude = round($latitude, 4);
+        $longitude = round($longitude, 4);
+
+        $cacheKey = "yr_nowcast_{$latitude}_{$longitude}";
+        $cacheMetaKey = "{$cacheKey}_meta";
+
+        return Cache::remember($cacheKey, $this->nowcastCacheTtl, function () use ($latitude, $longitude, $cacheKey, $cacheMetaKey) {
+            try {
+                $requestOptions = [
+                    'query' => [
+                        'lat' => $latitude,
+                        'lon' => $longitude,
+                    ],
+                ];
+
+                // Add If-Modified-Since header if we have cached metadata
+                $cachedMeta = Cache::get($cacheMetaKey);
+                if ($cachedMeta && isset($cachedMeta['last_modified'])) {
+                    $requestOptions['headers'] = [
+                        'If-Modified-Since' => $cachedMeta['last_modified'],
+                    ];
+                }
+
+                // Absolute URL: overrides the client's locationforecast base_uri while still
+                // reusing its User-Agent header and any test-injected handler/mock.
+                $response = $this->client->get(self::NOWCAST_API_URL, $requestOptions);
+
+                // If 304 Not Modified, return cached data
+                if ($response->getStatusCode() === 304) {
+                    return Cache::get($cacheKey);
+                }
+
+                $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+
+                // Store Last-Modified header for future If-Modified-Since requests
+                $lastModified = $response->getHeader('Last-Modified')[0] ?? null;
+                if ($lastModified) {
+                    Cache::put($cacheMetaKey, ['last_modified' => $lastModified], $this->nowcastCacheTtl);
+                }
+
+                return $this->formatNowcastData($data);
+            } catch (\Throwable $e) {
+                // Includes GuzzleException (e.g. the 422 "Outsidegeographicarea" MET returns
+                // for coordinates outside Nordic radar coverage) and JSON decode failures.
+                report($e);
+
+                return;
+            }
+        });
+    }
+
+    /**
+     * Format raw MET Nowcast 2.0 API data into a flat structure
+     */
+    private function formatNowcastData(array $data): array
+    {
+        if (! isset($data['properties']['timeseries'])) {
+            return ['radar_coverage' => 'unknown', 'updated_at' => null, 'timeseries' => []];
+        }
+
+        $meta = $data['properties']['meta'] ?? [];
+
+        $timeseries = [];
+        foreach ($data['properties']['timeseries'] as $entry) {
+            $instant = $entry['data']['instant']['details'] ?? [];
+            $next1h = $entry['data']['next_1_hours'] ?? null;
+
+            $timeseries[] = [
+                'time' => $entry['time'],
+                'precipitation_rate' => $instant['precipitation_rate'] ?? null,
+                'symbol_code' => $next1h['summary']['symbol_code'] ?? null,
+            ];
+        }
+
+        return [
+            'radar_coverage' => $meta['radar_coverage'] ?? 'unknown',
+            'updated_at' => $meta['updated_at'] ?? null,
+            'timeseries' => $timeseries,
+        ];
     }
 
     /**
@@ -159,8 +263,15 @@ class YrWeatherService
 
                 // Precipitation
                 'precipitation_amount' => $next1h['details']['precipitation_amount'] ?? $next6h['details']['precipitation_amount'] ?? null,
-                'precipitation_min' => $next1h['details']['precipitation_amount_min'] ?? null,
-                'precipitation_max' => $next1h['details']['precipitation_amount_max'] ?? null,
+                'precipitation_min' => $next1h['details']['precipitation_amount_min']
+                    ?? $next6h['details']['precipitation_amount_min']
+                    ?? null,
+                'precipitation_max' => $next1h['details']['precipitation_amount_max']
+                    ?? $next6h['details']['precipitation_amount_max']
+                    ?? null,
+                'precipitation_probability' => $next1h['details']['probability_of_precipitation']
+                    ?? $next6h['details']['probability_of_precipitation']
+                    ?? null,
 
                 // UV index
                 'uv_index' => $instant['ultraviolet_index_clear_sky'] ?? null,
@@ -170,6 +281,15 @@ class YrWeatherService
                     ?? $next6h['summary']['symbol_code']
                     ?? $next12h['summary']['symbol_code']
                     ?? null,
+
+                // Span of this step, in hours, so consumers don't need to re-derive it
+                // from which next_*_hours block was present.
+                'duration_hours' => match (true) {
+                    $next1h !== null => 1,
+                    $next6h !== null => 6,
+                    $next12h !== null => 12,
+                    default => null,
+                },
             ];
         }
 

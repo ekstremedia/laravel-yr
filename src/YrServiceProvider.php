@@ -24,7 +24,8 @@ class YrServiceProvider extends ServiceProvider
         $this->app->singleton(YrWeatherService::class, function ($app) {
             return new YrWeatherService(
                 config('yr.user_agent'),
-                config('yr.cache_ttl')
+                config('yr.cache_ttl'),
+                nowcastCacheTtl: config('yr.nowcast_cache_ttl')
             );
         });
 
