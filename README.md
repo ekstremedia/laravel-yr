@@ -296,9 +296,9 @@ Weather data is automatically cached to avoid hitting the API too often.
 
 The package intelligently caches all API requests:
 
-- **Weather data**: Cached by coordinates and parameters. The cache automatically respects the `Expires` header from MET Norway's API, typically updating every hour.
+- **Weather data**: Cached by coordinates and parameters until the `Expires` time MET Norway sends with each answer (forecasts typically expire within the hour). `cache_ttl` is only the fallback when MET sends no `Expires`. Sun and moon data follow the same rule. A failed request is never cached.
 - **Geocoding**: Address lookups are cached for 7 days to minimize requests to the geocoding service.
-- **Conditional requests**: The package uses `If-Modified-Since` headers to check if data has changed, reducing bandwidth usage.
+- **Conditional requests**: Once an answer has expired, the next request sends `If-Modified-Since`; a `304 Not Modified` reuses the cached body and keeps it until the new `Expires`. The last good answer is kept for a day for this.
 
 All GET endpoints (`/api/weather/current` and `/api/weather/forecast`) benefit from this caching layer, ensuring fast responses while respecting API rate limits.
 

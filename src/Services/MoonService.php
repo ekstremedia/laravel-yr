@@ -40,61 +40,63 @@ class MoonService
 
         $cacheKey = "yr_moon_{$latitude}_{$longitude}_{$date}_{$offset}";
 
-        return Cache::remember($cacheKey, $this->cacheTtl, function () use ($latitude, $longitude, $date, $offset, $cacheKey) {
-            try {
-                $params = [
-                    'lat' => $latitude,
-                    'lon' => $longitude,
-                ];
+        $cached = Cache::get($cacheKey);
 
-                // Only add date if specified
-                if ($date) {
-                    $params['date'] = $date;
-                }
+        if (is_array($cached)) {
+            return $cached;
+        }
 
-                // Only add offset if non-zero
-                if ($offset !== 0) {
-                    $params['offset'] = sprintf('%+03d:00', $offset);
-                }
+        try {
+            $params = [
+                'lat' => $latitude,
+                'lon' => $longitude,
+            ];
 
-                $response = Http::withHeaders([
-                    'User-Agent' => $this->userAgent,
-                ])
-                    ->timeout(10)
-                    ->get("{$this->baseUrl}/moon", $params);
+            // Only add date if specified
+            if ($date) {
+                $params['date'] = $date;
+            }
 
-                if (! $response->successful()) {
-                    \Log::error('MoonService API failed', [
-                        'status' => $response->status(),
-                        'body' => $response->body(),
-                        'url' => "{$this->baseUrl}/moon",
-                        'params' => ['lat' => $latitude, 'lon' => $longitude, 'date' => $date, 'offset' => $offset],
-                    ]);
+            // Only add offset if non-zero
+            if ($offset !== 0) {
+                $params['offset'] = sprintf('%+03d:00', $offset);
+            }
 
-                    return;
-                }
+            $response = Http::withHeaders([
+                'User-Agent' => $this->userAgent,
+            ])
+                ->timeout(10)
+                ->get("{$this->baseUrl}/moon", $params);
 
-                $data = $response->json();
-
-                // Check for Expires header and update cache TTL accordingly
-                if ($response->hasHeader('Expires')) {
-                    $expires = strtotime($response->header('Expires'));
-                    $newTtl = max($expires - time(), 60); // Minimum 60 seconds
-
-                    // Re-cache with updated TTL
-                    Cache::put($cacheKey, $data, $newTtl);
-                }
-
-                return $this->formatMoonData($data);
-            } catch (\Exception $e) {
-                \Log::error('MoonService exception', [
-                    'message' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
+            if (! $response->successful()) {
+                \Log::error('MoonService API failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                    'url' => "{$this->baseUrl}/moon",
+                    'params' => ['lat' => $latitude, 'lon' => $longitude, 'date' => $date, 'offset' => $offset],
                 ]);
 
-                return;
+                return null;
             }
-        });
+
+            $formatted = $this->formatMoonData($response->json());
+
+            // Cache the formatted answer until MET's Expires time (at least 60 seconds), or
+            // for cache_ttl when MET sends none. A failed request is never cached.
+            $expires = $response->hasHeader('Expires') ? strtotime($response->header('Expires')) : false;
+            $ttl = $expires !== false ? max($expires - time(), 60) : $this->cacheTtl;
+
+            Cache::put($cacheKey, $formatted, $ttl);
+
+            return $formatted;
+        } catch (\Exception $e) {
+            \Log::error('MoonService exception', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return null;
+        }
     }
 
     /**
