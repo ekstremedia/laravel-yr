@@ -203,7 +203,7 @@ it('caches sun data until MET\'s Expires time and stores the formatted answer', 
             ['Expires' => httpDate(now()->addHours(6))],
         ),
     ]);
-    $service = new SunService();
+    $service = new SunService;
 
     $first = $service->getSunData(59.2676, 10.4076, '2026-10-19');
     $this->travel(2)->hours();
@@ -223,7 +223,7 @@ it('caches moon data until MET\'s Expires time', function () {
             ['Expires' => httpDate(now()->addHours(6))],
         ),
     ]);
-    $service = new MoonService();
+    $service = new MoonService;
 
     $service->getMoonData(59.2676, 10.4076, '2026-10-19');
     $this->travel(2)->hours();
@@ -238,7 +238,7 @@ it('never caches a failed sun request', function () {
             ->push('MET is down', 500)
             ->push(['properties' => ['sunrise' => ['time' => '2026-10-19T08:05+02:00']]], 200),
     ]);
-    $service = new SunService();
+    $service = new SunService;
 
     expect($service->getSunData(59.2676, 10.4076, '2026-10-19'))->toBeNull()
         ->and($service->getSunData(59.2676, 10.4076, '2026-10-19')['sunrise']['time'])->toBe('2026-10-19T08:05+02:00');

@@ -3,7 +3,7 @@
 use Ekstremedia\LaravelYr\Services\SunService;
 
 beforeEach(function () {
-    $this->service = new SunService();
+    $this->service = new SunService;
 });
 
 it('can be instantiated', function () {

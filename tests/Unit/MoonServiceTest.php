@@ -3,7 +3,7 @@
 use Ekstremedia\LaravelYr\Services\MoonService;
 
 beforeEach(function () {
-    $this->service = new MoonService();
+    $this->service = new MoonService;
 });
 
 it('can be instantiated', function () {

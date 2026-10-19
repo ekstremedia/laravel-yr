@@ -36,11 +36,11 @@ class YrServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(SunService::class, function ($app) {
-            return new SunService();
+            return new SunService;
         });
 
         $this->app->singleton(MoonService::class, function ($app) {
-            return new MoonService();
+            return new MoonService;
         });
 
         $this->app->singleton(WeatherHelper::class, function ($app) {
