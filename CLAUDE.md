@@ -113,7 +113,7 @@ Both components:
 ### Configuration
 **Config file:** `config/yr.php`
 - `user_agent` - Required by MET Norway (must include contact info)
-- `cache_ttl` - Default cache duration (default: 3600s)
+- `cache_ttl` - Cache duration when MET sends no `Expires` header (default: 3600s); otherwise answers are cached until `Expires`
 - `enable_demo_route` - Toggle demo page on/off (default: true)
 - `enable_api_routes` - Toggle API routes on/off (default: true)
 - `api_route_prefix` - Route prefix for API endpoints (default: `api/weather`)

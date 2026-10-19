@@ -20,8 +20,10 @@ return [
     | Cache TTL
     |--------------------------------------------------------------------------
     |
-    | The time-to-live for cached weather data in seconds.
-    | MET recommends not requesting data more frequently than every 10 minutes.
+    | How long a forecast (and sun/moon data) is cached, in seconds, when MET
+    | sends no Expires header. When it does, the answer is kept until that
+    | Expires time, and an expired answer is revalidated with If-Modified-Since
+    | (a 304 reuses the cached body), as MET's terms of service ask.
     | Default: 3600 seconds (1 hour)
     |
     */
@@ -32,9 +34,9 @@ return [
     | Nowcast Cache TTL
     |--------------------------------------------------------------------------
     |
-    | The time-to-live for cached MET Nowcast 2.0 data in seconds, used by
-    | getNowcast(). Nowcast updates every few minutes, so this is intentionally
-    | much shorter than 'cache_ttl' above.
+    | The fallback time-to-live for MET Nowcast 2.0 data in seconds, used by
+    | getNowcast() when MET sends no Expires header. Nowcast updates every few
+    | minutes, so this is intentionally much shorter than 'cache_ttl' above.
     | Default: 300 seconds (5 minutes)
     |
     */

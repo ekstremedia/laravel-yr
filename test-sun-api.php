@@ -38,7 +38,7 @@ if (! class_exists('Illuminate\Support\Facades\Cache')) {
 
 echo "Testing SunService...\n\n";
 
-$service = new SunService();
+$service = new SunService;
 $data = $service->getSunData(68.1231, 15.523);
 
 if ($data) {

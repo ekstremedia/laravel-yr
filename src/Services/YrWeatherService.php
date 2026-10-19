@@ -23,6 +23,13 @@ class YrWeatherService
     private const NOWCAST_API_URL = 'https://api.met.no/weatherapi/nowcast/2.0/complete';
 
     /**
+     * How long the last good answer is kept for revalidation after it has expired: long enough
+     * to cover any sensible polling interval, short enough that an abandoned location does not
+     * stay in the cache for good.
+     */
+    private const STALE_TTL = 86400;
+
+    /**
      * @param  ClientInterface|null  $client  Inject a client (e.g. Guzzle MockHandler-backed) for
      *                                        testing without hitting the real MET API. Defaults to
      *                                        a real Guzzle client for normal application use.
@@ -46,6 +53,10 @@ class YrWeatherService
     /**
      * Get weather forecast for given coordinates
      *
+     * The answer is cached until the Expires time MET sends with it (or `cache_ttl` when MET
+     * sends none), and revalidated with If-Modified-Since once it has expired; see
+     * cachedRequest().
+     *
      * @param  int|null  $altitude  Altitude in meters (optional but recommended)
      * @param  bool  $complete  Use complete endpoint with all data (default: false for compact)
      */
@@ -56,65 +67,30 @@ class YrWeatherService
         $longitude = round($longitude, 4);
 
         $cacheKey = "yr_weather_{$latitude}_{$longitude}_".($altitude ?? 'auto').'_'.($complete ? 'complete' : 'compact');
-        $cacheMetaKey = "{$cacheKey}_meta";
 
-        return Cache::remember($cacheKey, $this->cacheTtl, function () use ($latitude, $longitude, $altitude, $complete, $cacheKey, $cacheMetaKey) {
-            try {
-                $query = [
-                    'lat' => $latitude,
-                    'lon' => $longitude,
-                ];
+        $query = [
+            'lat' => $latitude,
+            'lon' => $longitude,
+        ];
 
-                if ($altitude !== null) {
-                    $query['altitude'] = $altitude;
-                }
+        if ($altitude !== null) {
+            $query['altitude'] = $altitude;
+        }
 
-                $endpoint = $complete ? 'complete' : 'compact';
+        try {
+            return $this->cachedRequest(
+                $cacheKey,
+                $complete ? 'complete' : 'compact',
+                $query,
+                $this->cacheTtl,
+                fn (array $data): array => $this->formatWeatherData($data),
+            );
+        } catch (GuzzleException|\JsonException $e) {
+            // A request that failed or a body that is not JSON: report it, give the caller null.
+            report($e);
 
-                // Add If-Modified-Since header if we have cached metadata
-                $requestOptions = ['query' => $query];
-                $cachedMeta = Cache::get($cacheMetaKey);
-                if ($cachedMeta && isset($cachedMeta['last_modified'])) {
-                    $requestOptions['headers'] = [
-                        'If-Modified-Since' => $cachedMeta['last_modified'],
-                    ];
-                }
-
-                $response = $this->client->get($endpoint, $requestOptions);
-
-                // If 304 Not Modified, return cached data
-                if ($response->getStatusCode() === 304) {
-                    return Cache::get($cacheKey);
-                }
-
-                $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
-
-                // Store Last-Modified header for future If-Modified-Since requests
-                $lastModified = $response->getHeader('Last-Modified')[0] ?? null;
-                if ($lastModified) {
-                    Cache::put($cacheMetaKey, ['last_modified' => $lastModified], $this->cacheTtl);
-                }
-
-                // Get cache TTL from Expires header if available
-                $expiresHeader = $response->getHeader('Expires')[0] ?? null;
-                if ($expiresHeader) {
-                    $expiresAt = Carbon::parse($expiresHeader);
-                    // now()->diffInSeconds($expiresAt): seconds remaining until Expires. Carbon 3's
-                    // diffInSeconds() is signed (unlike Carbon 2's absolute default), so the operand
-                    // order matters here: now()->diffInSeconds($expiresAt) is positive while Expires
-                    // is still in the future, and goes negative once it has passed - max(60, ...)
-                    // then floors that at 60 seconds either way.
-                    $ttl = max(60, now()->diffInSeconds($expiresAt)); // Minimum 60 seconds
-                    Cache::put($cacheKey, $this->formatWeatherData($data), $ttl);
-                }
-
-                return $this->formatWeatherData($data);
-            } catch (GuzzleException $e) {
-                report($e);
-
-                return;
-            }
-        });
+            return null;
+        }
     }
 
     /**
@@ -137,6 +113,8 @@ class YrWeatherService
      * Finland, Denmark); MET responds with a 422 "Outsidegeographicarea" error outside that
      * area. This never throws - any HTTP/decode failure, and any out-of-coverage response,
      * results in null so a caller can fall back to the regular forecast without a try/catch.
+     * Cached like getForecast(), with `nowcast_cache_ttl` as the fallback when MET sends no
+     * Expires.
      */
     public function getNowcast(float $latitude, float $longitude): ?array
     {
@@ -144,52 +122,104 @@ class YrWeatherService
         $latitude = round($latitude, 4);
         $longitude = round($longitude, 4);
 
-        $cacheKey = "yr_nowcast_{$latitude}_{$longitude}";
-        $cacheMetaKey = "{$cacheKey}_meta";
+        try {
+            // Absolute URL: overrides the client's locationforecast base_uri while still
+            // reusing its User-Agent header and any test-injected handler/mock.
+            return $this->cachedRequest(
+                "yr_nowcast_{$latitude}_{$longitude}",
+                self::NOWCAST_API_URL,
+                ['lat' => $latitude, 'lon' => $longitude],
+                $this->nowcastCacheTtl,
+                fn (array $data): array => $this->formatNowcastData($data),
+            );
+        } catch (\Throwable $e) {
+            // Includes GuzzleException (e.g. the 422 "Outsidegeographicarea" MET returns
+            // for coordinates outside Nordic radar coverage) and JSON decode failures.
+            report($e);
 
-        return Cache::remember($cacheKey, $this->nowcastCacheTtl, function () use ($latitude, $longitude, $cacheKey, $cacheMetaKey) {
-            try {
-                $requestOptions = [
-                    'query' => [
-                        'lat' => $latitude,
-                        'lon' => $longitude,
-                    ],
-                ];
+            return null;
+        }
+    }
 
-                // Add If-Modified-Since header if we have cached metadata
-                $cachedMeta = Cache::get($cacheMetaKey);
-                if ($cachedMeta && isset($cachedMeta['last_modified'])) {
-                    $requestOptions['headers'] = [
-                        'If-Modified-Since' => $cachedMeta['last_modified'],
-                    ];
-                }
+    /**
+     * Fetch a MET endpoint through the cache, the way MET's terms of service ask for: serve
+     * the answer until its Expires time, then send If-Modified-Since and reuse the body on a
+     * 304 Not Modified.
+     *
+     * Two cache entries per request. The fresh entry holds the formatted answer until Expires
+     * (or $fallbackTtl when MET sends no Expires header); while it exists MET is not asked at
+     * all. The stale entry holds the same answer and its Last-Modified for a day, outliving the
+     * fresh one, so an expired answer can be revalidated and a 304 answered from it. A failed
+     * request is never cached, so the next call tries again.
+     *
+     * (Until 1.2.0 this was a Cache::remember() whose own put after the callback replaced the
+     * Expires TTL with `cache_ttl`, and a 304 was answered from the entry that had just missed,
+     * which returned null.)
+     *
+     * @param  array<string, mixed>  $query
+     * @param  callable(array<string, mixed>): array<string, mixed>  $format
+     *
+     * @throws GuzzleException|\JsonException
+     */
+    private function cachedRequest(string $cacheKey, string $uri, array $query, int $fallbackTtl, callable $format): ?array
+    {
+        $fresh = Cache::get($cacheKey);
 
-                // Absolute URL: overrides the client's locationforecast base_uri while still
-                // reusing its User-Agent header and any test-injected handler/mock.
-                $response = $this->client->get(self::NOWCAST_API_URL, $requestOptions);
+        if (is_array($fresh)) {
+            return $fresh;
+        }
 
-                // If 304 Not Modified, return cached data
-                if ($response->getStatusCode() === 304) {
-                    return Cache::get($cacheKey);
-                }
+        $staleKey = "{$cacheKey}_stale";
+        $stale = Cache::get($staleKey);
+        $hasStale = is_array($stale) && array_key_exists('data', $stale);
 
-                $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        $options = ['query' => $query];
 
-                // Store Last-Modified header for future If-Modified-Since requests
-                $lastModified = $response->getHeader('Last-Modified')[0] ?? null;
-                if ($lastModified) {
-                    Cache::put($cacheMetaKey, ['last_modified' => $lastModified], $this->nowcastCacheTtl);
-                }
+        if ($hasStale && ! empty($stale['last_modified'])) {
+            $options['headers'] = ['If-Modified-Since' => $stale['last_modified']];
+        }
 
-                return $this->formatNowcastData($data);
-            } catch (\Throwable $e) {
-                // Includes GuzzleException (e.g. the 422 "Outsidegeographicarea" MET returns
-                // for coordinates outside Nordic radar coverage) and JSON decode failures.
-                report($e);
+        $response = $this->client->get($uri, $options);
 
-                return;
+        if ($response->getStatusCode() === 304) {
+            if (! $hasStale) {
+                // MET only answers 304 to a conditional request, which is only sent with a stale
+                // copy; without one there is nothing to serve.
+                return null;
             }
-        });
+
+            $data = $stale['data'];
+            $lastModified = $response->getHeader('Last-Modified')[0] ?? $stale['last_modified'] ?? null;
+        } else {
+            $data = $format(json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR));
+            $lastModified = $response->getHeader('Last-Modified')[0] ?? null;
+        }
+
+        Cache::put($cacheKey, $data, $this->ttlUntilExpires($response->getHeader('Expires')[0] ?? null, $fallbackTtl));
+        Cache::put($staleKey, ['data' => $data, 'last_modified' => $lastModified], self::STALE_TTL);
+
+        return $data;
+    }
+
+    /**
+     * Seconds until MET's Expires time, at least 60 so a past or clock-skewed Expires does not
+     * send a request on every call; the fallback when the header is missing or unreadable.
+     */
+    private function ttlUntilExpires(?string $expiresHeader, int $fallbackTtl): int
+    {
+        if ($expiresHeader === null || $expiresHeader === '') {
+            return $fallbackTtl;
+        }
+
+        try {
+            $expiresAt = Carbon::parse($expiresHeader);
+        } catch (\Throwable) {
+            return $fallbackTtl;
+        }
+
+        // Timestamps, not diffInSeconds(): Carbon 2 (Laravel 10) returns an absolute difference,
+        // which would keep a past Expires for as long as it lies behind.
+        return max(60, $expiresAt->getTimestamp() - now()->getTimestamp());
     }
 
     /**
