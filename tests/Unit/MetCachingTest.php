@@ -243,3 +243,10 @@ it('never caches a failed sun request', function () {
     expect($service->getSunData(59.2676, 10.4076, '2026-10-19'))->toBeNull()
         ->and($service->getSunData(59.2676, 10.4076, '2026-10-19')['sunrise']['time'])->toBe('2026-10-19T08:05+02:00');
 });
+
+it('returns null when MET answers with a body that is not JSON', function () {
+    $history = [];
+    $service = serviceAnswering([new Response(200, [], 'not json')], $history);
+
+    expect($service->getForecast(59.2676, 10.4076))->toBeNull();
+});

@@ -85,7 +85,8 @@ class YrWeatherService
                 $this->cacheTtl,
                 fn (array $data): array => $this->formatWeatherData($data),
             );
-        } catch (GuzzleException $e) {
+        } catch (GuzzleException|\JsonException $e) {
+            // A request that failed or a body that is not JSON: report it, give the caller null.
             report($e);
 
             return null;
@@ -216,8 +217,9 @@ class YrWeatherService
             return $fallbackTtl;
         }
 
-        // Carbon 3's diffInSeconds() is signed: positive while Expires is still ahead.
-        return max(60, (int) now()->diffInSeconds($expiresAt));
+        // Timestamps, not diffInSeconds(): Carbon 2 (Laravel 10) returns an absolute difference,
+        // which would keep a past Expires for as long as it lies behind.
+        return max(60, $expiresAt->getTimestamp() - now()->getTimestamp());
     }
 
     /**
